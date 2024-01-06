@@ -1,0 +1,46 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id            String         @id @default(uuid()) @db.Uuid
+    isAdmin       Boolean        @default(false)
+    Organizations Organization[]
+    Media         Media[]
+}
+
+model Organization {
+    id          String  @id @default(uuid()) @db.Uuid
+    name        String
+    description String?
+    createdById String  @db.Uuid
+    createdBy   User    @relation(fields: [createdById], references: [id])
+}
+
+enum MediaType {
+    IMAGE
+    VIDEO
+    AUDIO
+    PPT
+}
+
+model Project {
+    id   String @id @default(uuid()) @db.Uuid
+    name String
+}
+
+model Media {
+    id          String    @id @default(uuid()) @db.Uuid
+    type        MediaType
+    createdAt   DateTime  @default(now()) @db.Timestamp()
+    createdById String    @db.Uuid
+    createdBy   User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
+    metadata    Json?
+    path        String
+    bucketName  String
+}

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "es6",
+    "sourceMap": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "typeRoots": ["./types/", "node_modules/@types"],
+    "types": ["node"]
+  },
+  "exclude": ["dist"]
+}
