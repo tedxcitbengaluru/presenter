@@ -19,22 +19,22 @@ const ZType = {
   Uuid: z.string().uuid(),
 };
 
-export namespace ZPrisma {
-  export const User = z.object({
+export const ZPrisma = {
+  User: z.object({
     id: ZType.Uuid.nullish(),
     isAdmin: ZType.Boolean.nullish(),
-  });
-  export const Organization = z.object({
+  }),
+  Organization: z.object({
     id: ZType.Uuid.nullish(),
     name: ZType.String,
     description: ZType.String.nullish(),
     createdById: ZType.Uuid,
-  });
-  export const Project = z.object({
+  }),
+  Project: z.object({
     id: ZType.Uuid.nullish(),
     name: ZType.String,
-  });
-  export const Media = z.object({
+  }),
+  Media: z.object({
     id: ZType.Uuid.nullish(),
     type: z.nativeEnum(MediaType),
     createdAt: ZType.DateTime.nullish(),
@@ -42,5 +42,5 @@ export namespace ZPrisma {
     metadata: ZType.Json.nullish(),
     path: ZType.String,
     bucketName: ZType.String,
-  });
-}
+  }),
+};

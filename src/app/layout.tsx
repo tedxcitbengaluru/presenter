@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/utils/themeProvider";
 import { ThemeToggle } from "@/components/utils/themeToggle";
+import { AuthWrapper } from "@/components/auth";
+import { Navbar } from "@/components/navbar";
 
 export const metadata: Metadata = {
   title: "Presenter",
@@ -36,8 +38,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ThemeToggle />
-          {children}
+          <Navbar />
+          <AuthWrapper>{children}</AuthWrapper>
         </ThemeProvider>
         <Toaster richColors closeButton />
       </body>

@@ -3,8 +3,7 @@ import { SampleClient } from "./sampleClient";
 import { GetFileBaseUrl } from "@/utils/storage/getFileBaseUrl";
 import { UploadButton } from "@/components/utils/uploadButton";
 import Image from "next/image";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/utils/prisma";
 
 export async function SampleServerComponent() {
   const mediaArray = await prisma.media.findMany();

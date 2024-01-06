@@ -1,14 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
 import { MediaType } from "@prisma/client";
-import { appConstants } from "../appConstants";
 import { GetFileBaseUrl } from "./getFileBaseUrl";
 import { createMediaAction } from "@/actions/media/createMediaAction";
-
-const supabase = createClient(
-  appConstants.NEXT_PUBLIC_SUPABASE_PROJECT_URL,
-  appConstants.NEXT_PUBLIC_SUPABASE_PROJECT_ANON_KEY,
-);
+import { supabaseClient } from "../supabaseCient";
 
 function imageSize(url: string) {
   const img = document.createElement("img");
@@ -77,7 +71,7 @@ export const UploadFileService = async (
     throw "File type not allowed";
   }
 
-  const fileUploadResult = await supabase.storage
+  const fileUploadResult = await supabaseClient.storage
     .from(config.orgBucketName)
     .upload(config.container + "/" + uuidv4(), file);
 
@@ -112,7 +106,7 @@ export const UploadFileService = async (
       createdById: config.uploadedByUserId,
     });
   } catch (error) {
-    supabase.storage
+    supabaseClient.storage
       .from(config.orgBucketName)
       .remove([fileUploadResult.data.path]);
 

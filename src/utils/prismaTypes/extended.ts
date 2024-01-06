@@ -1,12 +1,12 @@
 import { ZPrisma } from "./model";
 
-export namespace ZPrismaExt {
-  export const User = ZPrisma.User.extend({});
-  export const Organization = ZPrisma.Organization.extend({
+export const ZPrismaExt = {
+  User: ZPrisma.User.extend({}),
+  Organization: ZPrisma.Organization.extend({
     createdBy: ZPrisma.User,
-  });
-  export const Project = ZPrisma.Project.extend({});
-  export const Media = ZPrisma.Media.extend({
+  }),
+  Project: ZPrisma.Project.extend({}),
+  Media: ZPrisma.Media.extend({
     createdBy: ZPrisma.User,
-  });
-}
+  }),
+};

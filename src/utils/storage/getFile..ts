@@ -1,13 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { appConstants } from "../appConstants";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseClient } from "../supabaseCient";
 
 const prisma = new PrismaClient();
-
-const supabase = createClient(
-  appConstants.NEXT_PUBLIC_SUPABASE_PROJECT_URL,
-  appConstants.NEXT_PUBLIC_SUPABASE_PROJECT_ANON_KEY,
-);
 
 export const GetFileService = async (mediaId: string) => {
   try {
@@ -18,8 +12,9 @@ export const GetFileService = async (mediaId: string) => {
     });
 
     return {
-      url: supabase.storage.from(media.bucketName).getPublicUrl(media.path).data
-        .publicUrl,
+      url: supabaseClient.storage
+        .from(media.bucketName)
+        .getPublicUrl(media.path).data.publicUrl,
       media,
     };
   } catch (error) {

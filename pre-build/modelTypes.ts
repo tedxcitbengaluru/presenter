@@ -21,7 +21,7 @@ const ZType = {
     Uuid: z.string().uuid()
 };
 
-export namespace ZPrisma {
+export const ZPrisma = {
 `;
 
 const EndingZodFileContent = `
@@ -82,12 +82,12 @@ const formatField = (model: Model, field: Field) => {
 };
 
 const formatModel = (model: Model) =>
-  `    export const ${model.name} = z.object({
+  `${model.name} : z.object({
         ${(model.properties.filter((x) => x.type === "field") as Field[])
           .map((x) => formatField(model, x))
           .filter((x) => x != null)
           .join(`,\n        `)}
-    })
+    }),
 `;
 
 export const generateModelTypes = async () => {

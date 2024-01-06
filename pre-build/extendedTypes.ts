@@ -6,7 +6,7 @@ import { Model, Enum, Field, getSchema } from "@mrleebo/prisma-ast";
 const InitialZodFileContent = `
 import { ZPrisma } from './model';
 
-export namespace ZPrismaExt {
+export const ZPrismaExt = {
 `;
 
 const EndingZodFileContent = `
@@ -61,12 +61,12 @@ const formatField = (model: Model, field: Field) => {
 };
 
 const formatModel = (model: Model) =>
-  `    export const ${model.name} = ZPrisma.${model.name}.extend({
+  `${model.name} : ZPrisma.${model.name}.extend({
         ${(model.properties.filter((x) => x.type === "field") as Field[])
           .map((x) => formatField(model, x))
           .filter((x) => x != null)
           .join(`,\n        `)}
-    })
+    }),
 `;
 
 export const generateExtendedTypes = async () => {
