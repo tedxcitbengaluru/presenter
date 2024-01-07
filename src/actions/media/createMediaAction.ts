@@ -1,12 +1,11 @@
 "use server";
 
 import { createActionService } from "@/utils/createActionService";
+import { prisma } from "@/utils/prisma";
 import { ZPrisma } from "@/utils/prismaTypes";
 import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-
-const prisma = new PrismaClient();
 
 export const createMediaAction = createActionService(
   ZPrisma.Media.omit({ id: true, metadata: true, createdAt: true }).extend({

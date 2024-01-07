@@ -4,9 +4,10 @@ import { Suspense } from "react";
 export default function Home() {
   return (
     <main>
-      <Suspense fallback={<div>Loading...</div>}>
+      {/* <Suspense fallback={<div>Loading...</div>}>
         <SampleServerComponent />
-      </Suspense>
+      </Suspense> */}
+      Hello World
     </main>
   );
 }

@@ -1,10 +1,10 @@
 import { ZPrisma } from "./model";
 
 export const ZPrismaExt = {
-  User: ZPrisma.User.extend({}),
-  Organization: ZPrisma.Organization.extend({
-    createdBy: ZPrisma.User,
+  User: ZPrisma.User.extend({
+    organization: ZPrisma.Organization.nullish(),
   }),
+  Organization: ZPrisma.Organization.extend({}),
   Project: ZPrisma.Project.extend({}),
   Media: ZPrisma.Media.extend({
     createdBy: ZPrisma.User,

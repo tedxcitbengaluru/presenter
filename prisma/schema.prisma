@@ -8,18 +8,18 @@ generator client {
 }
 
 model User {
-    id            String         @id @default(uuid()) @db.Uuid
-    isAdmin       Boolean        @default(false)
-    Organizations Organization[]
-    Media         Media[]
+    id             String        @id @default(uuid()) @db.Uuid
+    isAdmin        Boolean       @default(false)
+    Media          Media[]
+    organizationId String?       @db.Uuid
+    organization   Organization? @relation(fields: [organizationId], references: [id])
 }
 
 model Organization {
     id          String  @id @default(uuid()) @db.Uuid
     name        String
     description String?
-    createdById String  @db.Uuid
-    createdBy   User    @relation(fields: [createdById], references: [id])
+    User        User[]
 }
 
 enum MediaType {

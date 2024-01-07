@@ -11,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { revalidatePath } from "next/cache";
 
 export function ThemeToggle() {
   const { setTheme } = useTheme();
