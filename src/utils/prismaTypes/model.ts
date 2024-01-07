@@ -33,6 +33,10 @@ export const ZPrisma = {
   Project: z.object({
     id: ZType.Uuid.nullish(),
     name: ZType.String,
+    description: ZType.String.nullish(),
+    createdById: ZType.Uuid,
+    createdAt: ZType.DateTime.nullish(),
+    organizationId: ZType.Uuid,
   }),
   Media: z.object({
     id: ZType.Uuid.nullish(),
