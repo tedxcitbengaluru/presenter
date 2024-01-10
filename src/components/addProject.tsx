@@ -61,6 +61,7 @@ export default function NewProjectComp() {
       });
       handleCloseDialog();
       toast.success("Project successfully created.");
+      window.location.reload();
     } catch (error) {
       toast.error(
         "There was some issue in creating the project. please try again later.",
