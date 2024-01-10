@@ -3,7 +3,7 @@
 import { SessionStore } from "@/store/session";
 import { ThemeToggle } from "./utils/themeToggle";
 import { Button } from "./ui/button";
-import { supabaseClient } from "@/utils/supabaseCient";
+import { supabaseClient } from "@/utils/supabaseClient";
 import { useRouter } from "next/navigation";
 
 export const Navbar: React.FC = () => {

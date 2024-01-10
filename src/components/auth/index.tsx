@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { TitleHeader } from "../utils/titleHeader";
 import { SessionStore } from "@/store/session";
-import { supabaseClient } from "@/utils/supabaseCient";
+import { supabaseClient } from "@/utils/supabaseClient";
 
 import { AuthCard } from "./card";
 import { Session } from "@supabase/supabase-js";

@@ -50,5 +50,5 @@ model Media {
     createdBy   User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
     metadata    Json?
     path        String
-    bucketName  String
+    bucketName  String 
 }

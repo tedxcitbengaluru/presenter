@@ -11,7 +11,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRef } from "react";
 import { toast } from "sonner";
-import { supabaseClient } from "@/utils/supabaseCient";
+import { supabaseClient } from "@/utils/supabaseClient";
 import { SessionStore } from "@/store/session";
 
 export const AuthCard: React.FC = () => {

@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { MediaType } from "@prisma/client";
 import { GetFileBaseUrl } from "./getFileBaseUrl";
 import { createMediaAction } from "@/actions/media/createMediaAction";
-import { supabaseClient } from "../supabaseCient";
+import { supabaseClient } from "../supabaseClient";
 
 function imageSize(url: string) {
   const img = document.createElement("img");
