@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { fetchAllProjects } from "./fetchProjects";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Label } from "./ui/label";
 
 import {
   Dialog,
@@ -26,6 +27,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "./ui/input";
 
 const ProjectsComp: React.FC = () => {
   const [allProjects, setAllProjects] = useState<any[]>([]);
@@ -35,6 +37,8 @@ const ProjectsComp: React.FC = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  const projectnameRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -76,6 +80,7 @@ const ProjectsComp: React.FC = () => {
   };
 
   const handleDelete = async (projectId: string | number) => {
+    const projectname = projectnameRef.current?.value;
     if (deleting) {
       return;
     }
@@ -91,6 +96,15 @@ const ProjectsComp: React.FC = () => {
       console.error("Error deleting project:", error);
     } finally {
       setDeleting(false);
+    }
+  };
+
+  //Function to confirm deletion of project
+  const confirmDeletion = (userInput: string, projectName: string) => {
+    if (userInput.current.value.localeCompare(projectName) === 0) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -127,10 +141,10 @@ const ProjectsComp: React.FC = () => {
                       Are you sure you want to delete project {project.name}?
                     </DialogTitle>
                   </DialogHeader>
-                  {/* <div className="grid gap-4 py-4">
+                  <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="name" className="text-right">
-                        To confirm, type {project.name} in the box below
+                        To confirm, type {project.name} in the box below:
                       </Label>
                       <Input
                         id="name"
@@ -140,7 +154,7 @@ const ProjectsComp: React.FC = () => {
                         className="col-span-3"
                       />
                     </div>
-                  </div> */}
+                  </div>
                   <DialogFooter>
                     <Button
                       onClick={() => handleCloseDialog()}
@@ -150,7 +164,12 @@ const ProjectsComp: React.FC = () => {
                       Cancel
                     </Button>
                     <Button
-                      onClick={() => handleDelete(project.id)}
+                      onClick={() =>
+                        confirmDeletion(
+                          projectnameRef.current.value,
+                          project.name,
+                        ) && handleDelete(project.id)
+                      }
                       disabled={deleting}
                       className="bg-red-600 text-white hover:text-black"
                     >
