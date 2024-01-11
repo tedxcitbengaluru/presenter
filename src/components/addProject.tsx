@@ -72,7 +72,7 @@ export default function NewProjectComp() {
   };
 
   return (
-    <Card className="w-full md:w-[350px] h-[220px] lg:w-full sm:w-3/4">
+    <Card className=" lg:w-[315px] h-[220px] xl:w-[400px] h-[220px] md:w-[350px] h-[220px] md:mx-5 lg:mx-2 sm:mx-10">
       <CardContent className="flex flex-col justify-center items-center h-full">
         <CardTitle className="text-center text-lg font-semibold">
           Create new project
