@@ -9,16 +9,20 @@ generator client {
 
 model User {
     id             String        @id @default(uuid()) @db.Uuid
+    username       String        @unique 
+    fullname       String?        
     isAdmin        Boolean       @default(false)
     Media          Media[]
     organizationId String?       @db.Uuid
     organization   Organization? @relation(fields: [organizationId], references: [id])
     Project        Project[]
+    
 }
 
 model Organization {
     id          String    @id @default(uuid()) @db.Uuid
-    name        String
+    name        String    
+    slug        String    @unique 
     description String?
     User        User[]
     Project     Project[]
@@ -35,6 +39,7 @@ model Project {
     id             String       @id @default(uuid()) @db.Uuid
     name           String
     description    String?
+    code           Int          @unique @default(autoincrement()) 
     createdById    String       @db.Uuid
     createdBy      User         @relation(fields: [createdById], references: [id])
     createdAt      DateTime     @default(now()) @db.Timestamp()

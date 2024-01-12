@@ -22,18 +22,22 @@ const ZType = {
 export const ZPrisma = {
   User: z.object({
     id: ZType.Uuid.nullish(),
+    username: ZType.String,
+    fullname: ZType.String.nullish(),
     isAdmin: ZType.Boolean.nullish(),
     organizationId: ZType.Uuid.nullish(),
   }),
   Organization: z.object({
     id: ZType.Uuid.nullish(),
     name: ZType.String,
+    slug: ZType.String,
     description: ZType.String.nullish(),
   }),
   Project: z.object({
     id: ZType.Uuid.nullish(),
     name: ZType.String,
     description: ZType.String.nullish(),
+    code: ZType.Int.nullish(),
     createdById: ZType.Uuid,
     createdAt: ZType.DateTime.nullish(),
     organizationId: ZType.Uuid,

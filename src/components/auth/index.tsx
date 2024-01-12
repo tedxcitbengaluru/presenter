@@ -8,6 +8,7 @@ import { supabaseClient } from "@/utils/supabaseClient";
 import { AuthCard } from "./card";
 import { Session } from "@supabase/supabase-js";
 import { LoaderAtomic } from "../utils/loader";
+import { User } from "@prisma/client";
 
 export const AuthWrapper: React.FC<{
   children: React.ReactNode;
@@ -19,7 +20,7 @@ export const AuthWrapper: React.FC<{
     const signAndFindUser = async (session: Session) => {
       const dbUserQuery = await supabaseClient
         .from("User")
-        .select("id, isAdmin, organizationId")
+        .select("id, username, fullname, isAdmin, organizationId")
         .eq("id", session.user.id);
 
       if (!dbUserQuery.data) {
@@ -58,6 +59,8 @@ export const AuthWrapper: React.FC<{
     );
   }
 
+  return <>{children}</>;
+
   if (!session) {
     return (
       <div className="p-8 xs:w-[80%] md:w-[50%] lg:w-[40%] xl:w-[30%] mx-auto">
@@ -66,6 +69,4 @@ export const AuthWrapper: React.FC<{
       </div>
     );
   }
-
-  return <>{children}</>;
 };

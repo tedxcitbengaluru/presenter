@@ -81,31 +81,24 @@ const ProjectsComp: React.FC = () => {
 
   const handleDelete = async (projectId: string | number) => {
     const projectname = projectnameRef.current?.value;
-    if (deleting) {
-      return;
-    }
-    try {
-      setDeleting(true);
-      await deleteProjectAction({
-        name: String(projectId),
-      });
-      handleCloseDialog();
-      toast.success("Project successfully created.");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error deleting project:", error);
-    } finally {
-      setDeleting(false);
-    }
-  };
 
-  //Function to confirm deletion of project
-  const confirmDeletion = (userInput: string, projectName: string) => {
-    if (userInput.current.value.localeCompare(projectName) === 0) {
-      return true;
-    } else {
-      return false;
-    }
+    //   if (deleting) {
+    //     return;
+    //   }
+    //   try {
+
+    //     setDeleting(true);
+    //     await deleteProjectAction({
+    //       name: String(projectId),
+    //     });
+    //     handleCloseDialog();
+    //     toast.success("Project successfully created.");
+    //     window.location.reload();
+    //   } catch (error) {
+    //     console.error("Error deleting project:", error);
+    //   } finally {
+    //     setDeleting(false);
+    //   }
   };
 
   return (
@@ -114,7 +107,7 @@ const ProjectsComp: React.FC = () => {
       <div className="m-4 md:m-10 mx-auto max-w-7xl grid gap-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
         <NewProjectComp />
         {currentProjects.map((project) => (
-          <Card className="  xl:w-[400px] h-[220px] lg:w-[315px] h-[220px] md:w-full md:w-[350px] h-[220px] lg:mx-2 sm:mx-10 xs:mx-10  md:mx-5 relative">
+          <Card className="2xl:[450px] h-[260px] xl:w-[400px] h-[260px] lg:w-[315px] h-[220px] md:w-full md:w-[350px] h-[220px] lg:mx-2 sm:mx-10 xs:mx-10  md:mx-5 relative">
             <CardHeader>
               <CardTitle>{project.name}</CardTitle>
             </CardHeader>
@@ -138,7 +131,7 @@ const ProjectsComp: React.FC = () => {
                 <DialogContent className="sm:max-w-[600px]">
                   <DialogHeader>
                     <DialogTitle>
-                      Are you sure you want to delete project {project.name}?
+                      Are you sure you want to delete project?
                     </DialogTitle>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
@@ -164,12 +157,7 @@ const ProjectsComp: React.FC = () => {
                       Cancel
                     </Button>
                     <Button
-                      onClick={() =>
-                        confirmDeletion(
-                          projectnameRef.current.value,
-                          project.name,
-                        ) && handleDelete(project.id)
-                      }
+                      onClick={() => handleDelete(project.id)}
                       disabled={deleting}
                       className="bg-red-600 text-white hover:text-black"
                     >
