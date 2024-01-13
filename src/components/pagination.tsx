@@ -20,7 +20,7 @@ const PaginationSection: React.FC<PaginationSectionProps> = ({
   onPageChange,
 }) => {
   return (
-    <Pagination className="my-8 ">
+    <Pagination className="my-8">
       <PaginationContent>
         {currentPage !== 1 && (
           <PaginationItem>

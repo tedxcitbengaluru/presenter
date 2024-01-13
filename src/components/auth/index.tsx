@@ -8,7 +8,9 @@ import { supabaseClient } from "@/utils/supabaseClient";
 import { AuthCard } from "./card";
 import { Session } from "@supabase/supabase-js";
 import { LoaderAtomic } from "../utils/loader";
-import { User } from "@prisma/client";
+import { usePathname, useRouter, notFound } from "next/navigation";
+import { Organization, User } from "@prisma/client";
+import { toast } from "sonner";
 
 export const AuthWrapper: React.FC<{
   children: React.ReactNode;
@@ -16,20 +18,35 @@ export const AuthWrapper: React.FC<{
   const { session, setSignIn, setSignOut } = SessionStore();
   const [isAuthLoaded, setIsAuthLoaded] = useState<boolean>(false);
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   useEffect(() => {
     const signAndFindUser = async (session: Session) => {
       const dbUserQuery = await supabaseClient
         .from("User")
-        .select("id, username, fullname, isAdmin, organizationId")
-        .eq("id", session.user.id);
+        .select(
+          "id, username, fullname, isAdmin, organizationId, Organization(slug)",
+        )
+        .eq("id", session.user.id)
+        .returns<(User & { Organization?: Pick<Organization, "slug"> })[]>();
 
       if (!dbUserQuery.data) {
         return;
       }
 
-      const dbUser = dbUserQuery.data[0];
+      const { Organization, ...dbUser } = dbUserQuery.data[0];
+      if (!Organization) {
+        toast.error("Ask an admin to add you to an organization!");
+        await supabaseClient.auth.signOut();
+      } else {
+        setSignIn(session, dbUser, Organization?.slug ?? null);
+        toast.success("Login successful");
 
-      setSignIn(session, dbUser);
+        if (pathname === "/login") {
+          router.push(`/${Organization.slug}`);
+        }
+      }
     };
 
     (async () => {
@@ -59,8 +76,6 @@ export const AuthWrapper: React.FC<{
     );
   }
 
-  return <>{children}</>;
-
   if (!session) {
     return (
       <div className="p-8 xs:w-[80%] md:w-[50%] lg:w-[40%] xl:w-[30%] mx-auto">
@@ -69,4 +84,6 @@ export const AuthWrapper: React.FC<{
       </div>
     );
   }
+
+  return <>{children}</>;
 };

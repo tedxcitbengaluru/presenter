@@ -7,8 +7,6 @@ import NewProjectComp from "./addProject";
 import SearchBar from "./searchbar";
 import { Trash } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
-import { toast } from "sonner";
-import { deleteProjectAction } from "@/actions/project/deleteProjectAction";
 import {
   Card,
   CardContent,
@@ -28,11 +26,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
+import { Project } from "@prisma/client";
 
-const ProjectsComp: React.FC = () => {
-  const [allProjects, setAllProjects] = useState<any[]>([]);
+const ProjectList: React.FC = () => {
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filteredProjects, setFilteredProjects] = useState<any[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const projectsPerPage = 8;
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -107,7 +106,10 @@ const ProjectsComp: React.FC = () => {
       <div className="m-4 md:m-10 mx-auto max-w-7xl grid gap-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
         <NewProjectComp />
         {currentProjects.map((project) => (
-          <Card className="2xl:[450px] h-[260px] xl:w-[400px] h-[260px] lg:w-[315px] h-[220px] md:w-full md:w-[350px] h-[220px] lg:mx-2 sm:mx-10 xs:mx-10  md:mx-5 relative">
+          <Card
+            key={project.id}
+            className="2xl:[450px] h-[260px] xl:w-[400px] h-[260px] lg:w-[315px] h-[220px] md:w-full md:w-[350px] h-[220px] lg:mx-2 sm:mx-10 xs:mx-10  md:mx-5 relative"
+          >
             <CardHeader>
               <CardTitle>{project.name}</CardTitle>
             </CardHeader>
@@ -179,7 +181,7 @@ const ProjectsComp: React.FC = () => {
   );
 };
 
-export default ProjectsComp;
+export default ProjectList;
 
 {
   /* <Link

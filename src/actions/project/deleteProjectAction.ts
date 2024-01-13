@@ -15,4 +15,8 @@ const deleteProjectAction = async ({
   });
 };
 
+// TODO : Convert into createAction
+
+// Input: Project Code
+
 export { deleteProjectAction };

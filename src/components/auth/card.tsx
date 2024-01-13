@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -9,18 +11,18 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabaseClient } from "@/utils/supabaseClient";
-import { SessionStore } from "@/store/session";
 
 export const AuthCard: React.FC = () => {
-  const { session, setSignIn, setSignOut } = SessionStore();
-
   const usernameRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
+  const [disableForm, setDisableForm] = useState(false);
+
   const handleSignIn = async () => {
+    setDisableForm(true);
     const username = usernameRef.current?.value;
     const password = passwordRef.current?.value;
     if (!username) {
@@ -37,11 +39,12 @@ export const AuthCard: React.FC = () => {
       password,
     });
 
+    setDisableForm(false);
     if (!signInResponse.data.session) {
       toast.error(
         "Login unsuccessful : " + signInResponse.error?.message ?? "",
       );
-    } else toast.success("Login successful");
+    }
   };
 
   return (
@@ -59,6 +62,7 @@ export const AuthCard: React.FC = () => {
               type="text"
               id="username-input"
               placeholder="Username"
+              disabled={disableForm}
             />
           </div>
           <div>
@@ -68,12 +72,17 @@ export const AuthCard: React.FC = () => {
               type="password"
               id="password-input"
               placeholder="Password"
+              disabled={disableForm}
             />
           </div>
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full" onClick={handleSignIn}>
+        <Button
+          className="w-full"
+          onClick={handleSignIn}
+          disabled={disableForm}
+        >
           Sign In
         </Button>
       </CardFooter>
