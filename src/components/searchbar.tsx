@@ -15,15 +15,20 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <div className="flex flex-row gap-2 place-content-center mt-8 mb-20">
-      <input
-        type="text"
-        placeholder="Search Projects..."
-        value={searchTerm}
-        onChange={handleSearch}
-        className="rounded-lg border shadow-md basis-1/4 p-2"
-      />
-      <MagnifyingGlass size={24} className="my-2" />
+    <div className="flex items-center justify-center">
+      <div className="flex items-center px-3 mt-10 mb-10 rounded-lg border shadow-md w-1/4">
+        <MagnifyingGlass
+          size={24}
+          className="mr-2 h-4 w-4 shrink-0 opacity-50"
+        />
+        <input
+          type="text"
+          placeholder="Search Projects..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="flex h-10 border-dotted rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+        />
+      </div>
     </div>
   );
 };
