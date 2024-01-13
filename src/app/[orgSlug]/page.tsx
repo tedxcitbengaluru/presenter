@@ -8,8 +8,9 @@ export default function OrganizationHomePage() {
 
   const params = useParams<{ orgSlug: string }>();
 
-  if (params.orgSlug === orgSlug) {
-    return <div>Equal</div>;
+  if (params.orgSlug === orgSlug || dbUser?.isAdmin) {
+    // TODO: if user is admin. and the org doesnt exist the show Not found
+    return <div>ProjectListing</div>;
   }
 
   notFound();
