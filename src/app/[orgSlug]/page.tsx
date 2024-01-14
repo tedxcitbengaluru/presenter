@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { supabaseClient } from "@/utils/supabaseClient";
 import { LoaderAtomic } from "@/components/utils/loader";
 import { SessionStore } from "@/store/session";
+import { toast } from "sonner";
 export default function OrganizationHomePage() {
   const params = useParams<{ orgSlug: string }>();
   const [organizationExists, setOrganizationExists] = useState(true);
   const [loading, setLoading] = useState(true);
   const { dbUser, orgSlug } = SessionStore();
 
+  // TODO: Convert into 1 if condition
   if (!dbUser?.isAdmin) {
     if (params.orgSlug !== orgSlug) {
       notFound();
@@ -18,14 +20,6 @@ export default function OrganizationHomePage() {
 
   useEffect(() => {
     const fetchOrganization = async () => {
-      const sessionResponse = await supabaseClient.auth.getSession();
-      const currentSession = sessionResponse.data?.session;
-
-      if (!currentSession) {
-        setLoading(false);
-        return;
-      }
-
       const organizationQuery = await supabaseClient
         .from("Organization")
         .select("slug")
@@ -33,7 +27,7 @@ export default function OrganizationHomePage() {
         .single();
 
       if (!organizationQuery.data) {
-        console.log("Organization not found!");
+        toast.error("Organization Not Found!");
         setOrganizationExists(false);
       }
 
@@ -41,7 +35,7 @@ export default function OrganizationHomePage() {
     };
 
     fetchOrganization();
-  }, [params.orgSlug]);
+  }, []);
 
   if (loading) {
     return (
