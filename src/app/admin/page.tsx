@@ -1,5 +1,6 @@
 "use client";
 
+import ListingPage from "@/components/listingPage";
 import { SessionStore } from "@/store/session";
 import { useRouter } from "next/navigation";
 
@@ -12,5 +13,7 @@ export default function AdminPage() {
     return <></>;
   }
 
-  return <div>Admin</div>;
+  return (
+    <ListingPage type="organization" isAdmin={false} organizationId={""} />
+  );
 }

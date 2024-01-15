@@ -3,9 +3,10 @@ import { MagnifyingGlass } from "@phosphor-icons/react";
 
 interface SearchBarProps {
   onSearch: (searchTerm: string) => void;
+  type: "project" | "organization";
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, type }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         />
         <input
           type="text"
-          placeholder="Search Projects..."
+          placeholder={`Search ${type}s`}
           value={searchTerm}
           onChange={handleSearch}
           className="flex h-10 border-dotted rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
