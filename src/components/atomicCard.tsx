@@ -70,18 +70,15 @@ const AtomicCard: React.FC<AtomicCardProps> = ({ data, type, onDelete }) => {
         </CardDescription>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Badge variant="outline" className="absolute bottom-8 right-10">
-          {type === "project"
-            ? new Date((data as Project).createdAt).toLocaleDateString(
-                "en-GB",
-                {
-                  day: "numeric",
-                  month: "numeric",
-                  year: "numeric",
-                },
-              )
-            : ""}
-        </Badge>
+        {type === "project" && (
+          <Badge variant="outline" className="absolute bottom-8 right-10">
+            {new Date((data as Project).createdAt).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "numeric",
+              year: "numeric",
+            })}
+          </Badge>
+        )}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="absolute bottom-7 rounded-full">
