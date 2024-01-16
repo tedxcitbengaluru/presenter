@@ -20,6 +20,9 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Project, Organization } from "@prisma/client";
+import { deleteProjectAction } from "@/actions/project/deleteProjectAction";
+import { deleteOrganizationAction } from "@/actions/organization/deleteOrganizationAction";
+import { toast } from "sonner";
 
 interface AtomicCardProps {
   data: Project | Organization;
@@ -39,18 +42,38 @@ const AtomicCard: React.FC<AtomicCardProps> = ({ data, type, onDelete }) => {
   const handleDelete = async () => {
     const itemName = itemNameRef.current?.value;
 
-    // Add your delete logic here
+    if (
+      !itemName ||
+      (type === "project" && itemName !== (data as Project).name) ||
+      (type === "organization" && itemName !== (data as Organization).name)
+    ) {
+      toast.error(`Incorrect ${type} name entered`);
+      return;
+    }
 
-    // setDeleting(true);
-    // try {
-    //   // Your delete logic
-    //   handleCloseDialog();
-    //   onDelete();
-    // } catch (error) {
-    //   console.error("Error deleting item:", error);
-    // } finally {
-    //   setDeleting(false);
-    // }
+    setDeleting(true);
+
+    try {
+      if (type === "project") {
+        await deleteProjectAction({
+          id: (data as Project).id,
+          name: itemName,
+        });
+      } else if (type === "organization") {
+        await deleteOrganizationAction({
+          id: (data as Organization).id,
+          name: itemName,
+        });
+      }
+
+      handleCloseDialog();
+      window.location.reload();
+      onDelete();
+    } catch (error) {
+      console.error(`Error deleting ${type}:`, error);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (

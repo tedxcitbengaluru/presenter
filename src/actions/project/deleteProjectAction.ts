@@ -1,22 +1,50 @@
 "use server";
+
+import { createActionService } from "@/utils/createActionService";
 import { prisma } from "@/utils/prisma";
+import { ZPrisma } from "@/utils/prismaTypes";
+import { revalidatePath } from "next/cache";
 
-interface DeleteProjectActionInput {
-  id: string;
-}
+export const deleteProjectAction = createActionService(
+  ZPrisma.Project.omit({
+    createdAt: true,
+    description: true,
+    organizationId: true,
+    createdById: true,
+  }),
+  async (input) => {
+    try {
+      await prisma.project.delete({
+        where: {
+          id: input.id?.toString(),
+          name: input.name,
+        },
+      });
 
-const deleteProjectAction = async ({
-  id,
-}: DeleteProjectActionInput): Promise<void> => {
-  await prisma.project.delete({
-    where: {
-      id: id,
-    },
-  });
-};
+      revalidatePath("/");
+    } catch (error) {
+      console.error(error);
+      throw "failed to delete the project.";
+    }
+  },
+);
+
+// interface DeleteProjectActionInput {
+//   id: string;
+// }
+
+// const deleteProjectAction = async ({
+//   id,
+// }: DeleteProjectActionInput): Promise<void> => {
+//   await prisma.project.delete({
+//     where: {
+//       id: id,
+//     },
+//   });
+// };
 
 // TODO : Convert into createAction
 
 // Input: Project Code
 
-export { deleteProjectAction };
+// export { deleteProjectAction };
