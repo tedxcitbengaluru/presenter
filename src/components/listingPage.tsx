@@ -24,9 +24,7 @@ const ListingPage: React.FC<{
 
         if (type === "project") {
           items = await fetchProjectsForOrganization(organizationId);
-        }
-
-        if (type === "organization") {
+        } else if (type === "organization") {
           items = await fetchAllOrganization();
         }
 
@@ -35,8 +33,9 @@ const ListingPage: React.FC<{
         console.error(`Error fetching ${type}s:`, error);
       }
     }
+
     fetchData();
-  });
+  }, [organizationId, type]);
 
   useEffect(() => {
     setFilteredItems(allItems);
@@ -58,21 +57,13 @@ const ListingPage: React.FC<{
     setCurrentPage(1);
   };
 
-  const handleAdd = () => {
-    // Add logic for adding items
-  };
+  const handleAdd = () => {};
 
-  const handleSuccess = () => {
-    // Add logic for handling success
-  };
+  const handleSuccess = () => {};
 
-  const handleError = () => {
-    // Add logic for handling error
-  };
+  const handleError = () => {};
 
-  const handleDelete = (itemId: string) => {
-    // Add logic for deleting items
-  };
+  const handleDelete = (itemId: string) => {};
 
   return (
     <>

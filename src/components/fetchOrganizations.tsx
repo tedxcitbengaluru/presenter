@@ -1,8 +1,9 @@
-"use server";
-import { prisma } from "@/utils/prisma";
+import { supabaseClient } from "@/utils/supabaseClient";
 
 export async function fetchAllOrganization() {
-  const organizations = await prisma.organization.findMany({});
+  const { data: organizations } = await supabaseClient
+    .from("Organization")
+    .select("*");
 
-  return organizations;
+  return organizations || [];
 }

@@ -1,14 +1,13 @@
-"use server";
-import { prisma } from "@/utils/prisma";
+import { supabaseClient } from "@/utils/supabaseClient";
 
 export async function fetchProjectsForOrganization(organizationId: string) {
-  const projectsForOrganization = await prisma.project.findMany({
-    where: {
-      organizationId: organizationId,
-    },
-  });
+  console.log(organizationId);
+  const { data: projectsForOrganization } = await supabaseClient
+    .from("Project")
+    .select("*")
+    .eq("organizationId", organizationId);
 
-  return projectsForOrganization;
+  return projectsForOrganization || [];
 }
 
 // "use server";
