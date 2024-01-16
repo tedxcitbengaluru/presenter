@@ -1,11 +1,11 @@
 "use server";
 
-import { createActionService } from "@/utils/createActionService";
+import { generateActionService } from "@/utils/generateActionService";
 import { prisma } from "@/utils/prisma";
 import { ZPrisma } from "@/utils/prismaTypes";
 import { revalidatePath } from "next/cache";
 
-export const deleteOrganizationAction = createActionService(
+export const deleteOrganizationAction = generateActionService(
   ZPrisma.Organization.omit({ description: true, slug: true }),
   async (input) => {
     try {

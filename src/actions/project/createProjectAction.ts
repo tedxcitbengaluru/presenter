@@ -1,11 +1,11 @@
 "use server";
 
-import { createActionService } from "@/utils/createActionService";
+import { generateActionService } from "@/utils/generateActionService";
 import { prisma } from "@/utils/prisma";
 import { ZPrisma } from "@/utils/prismaTypes";
 import { revalidatePath } from "next/cache";
 
-export const createProjectAction = createActionService(
+export const createProjectAction = generateActionService(
   ZPrisma.Project.omit({ id: true, createdAt: true }),
   async (input) => {
     try {

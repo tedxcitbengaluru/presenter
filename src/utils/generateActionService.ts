@@ -7,7 +7,7 @@ import {
   objectOutputType,
 } from "zod";
 
-export function createActionService<
+export function generateActionService<
   T extends ZodRawShape,
   UnknownKeys extends UnknownKeysParam = UnknownKeysParam,
   Catchall extends ZodTypeAny = ZodTypeAny,
