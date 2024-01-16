@@ -102,6 +102,11 @@ const AtomicCard: React.FC<AtomicCardProps> = ({ data, type, onDelete }) => {
             })}
           </Badge>
         )}
+        {type === "organization" && (
+          <Badge variant="outline" className="absolute bottom-8 right-10">
+            Slug: {(data as Organization).slug}
+          </Badge>
+        )}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="absolute bottom-7 rounded-full">
