@@ -9,16 +9,23 @@ export const createProjectAction = generateActionService(
   ZPrisma.Project.omit({ id: true, createdAt: true }),
   async (input) => {
     try {
-      await prisma.project.create({
+      const projectResult = await prisma.project.create({
         data: {
           name: input.name,
           description: input.description,
           createdById: input.createdById,
           organizationId: input.organizationId,
         },
+        select: {
+          organization: {
+            select: {
+              slug: true,
+            },
+          },
+        },
       });
 
-      revalidatePath("/");
+      revalidatePath(`/${projectResult.organization.slug}}`);
     } catch (error) {
       console.error(error);
       throw "failed to create the project.";

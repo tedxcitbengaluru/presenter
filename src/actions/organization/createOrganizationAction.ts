@@ -17,7 +17,7 @@ export const createOrganizationAction = generateActionService(
         },
       });
 
-      revalidatePath("/");
+      revalidatePath("/admin");
     } catch (error) {
       console.error(error);
       throw "failed to create the project.";

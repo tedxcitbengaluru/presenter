@@ -6,17 +6,16 @@ import { ZPrisma } from "@/utils/prismaTypes";
 import { revalidatePath } from "next/cache";
 
 export const deleteOrganizationAction = generateActionService(
-  ZPrisma.Organization.omit({ description: true, slug: true }),
+  ZPrisma.Organization.pick({ slug: true }),
   async (input) => {
     try {
       await prisma.organization.delete({
         where: {
-          id: input.id?.toString(),
-          name: input.name,
+          slug: input.slug,
         },
       });
 
-      revalidatePath("/");
+      revalidatePath("/admin");
     } catch (error) {
       console.error(error);
       throw "failed to delete the Organization.";

@@ -3,7 +3,6 @@
 import { generateActionService } from "@/utils/generateActionService";
 import { prisma } from "@/utils/prisma";
 import { ZPrisma } from "@/utils/prismaTypes";
-import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -25,7 +24,7 @@ export const createMediaAction = generateActionService(
         data: input,
       });
 
-      revalidatePath("/");
+      // revalidatePath("/");
     } catch (error) {
       console.error(error);
       throw "Failed to create Media";

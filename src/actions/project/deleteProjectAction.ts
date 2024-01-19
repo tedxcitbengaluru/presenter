@@ -6,22 +6,19 @@ import { ZPrisma } from "@/utils/prismaTypes";
 import { revalidatePath } from "next/cache";
 
 export const deleteProjectAction = generateActionService(
-  ZPrisma.Project.omit({
-    createdAt: true,
-    description: true,
-    organizationId: true,
-    createdById: true,
-  }),
+  ZPrisma.Project.pick({
+    code: true,
+  }).merge(ZPrisma.Organization.pick({ slug: true })),
   async (input) => {
     try {
-      await prisma.project.delete({
+      const deletedProject = await prisma.project.delete({
         where: {
-          id: input.id?.toString(),
-          name: input.name,
+          //@ts-ignore
+          code: input.code,
         },
       });
 
-      revalidatePath("/");
+      revalidatePath(`/${input.slug}`);
     } catch (error) {
       console.error(error);
       throw "failed to delete the project.";
