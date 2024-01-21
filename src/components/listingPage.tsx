@@ -6,12 +6,13 @@ import AtomicCard from "./atomicCard";
 import PaginationSection from "./pagination";
 import { fetchProjectsForOrganization } from "./fetchProjects";
 import { fetchAllOrganization } from "./fetchOrganizations";
+import toast from "sonner";
 
 const ListingPage: React.FC<{
-  isAdmin: boolean;
-  organizationId: string;
-  type: "project" | "organization";
-}> = ({ isAdmin, organizationId, type }) => {
+  isAdmin?: boolean;
+  organizationId?: string;
+}> = (props) => {
+  const { isAdmin, organizationId } = props;
   const [allItems, setAllItems] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredItems, setFilteredItems] = useState<any[]>([]);
@@ -22,20 +23,20 @@ const ListingPage: React.FC<{
       try {
         let items;
 
-        if (type === "project") {
+        if (organizationId) {
           items = await fetchProjectsForOrganization(organizationId);
-        } else if (type === "organization") {
+        } else {
           items = await fetchAllOrganization();
         }
 
         setAllItems(items || []);
       } catch (error) {
-        console.error(`Error fetching ${type}s:`, error);
+        console.error("Error fetching items:", error);
       }
     }
 
     fetchData();
-  }, [organizationId, type]);
+  }, [organizationId]);
 
   useEffect(() => {
     setFilteredItems(allItems);
@@ -59,18 +60,25 @@ const ListingPage: React.FC<{
 
   const handleAdd = () => {};
 
-  const handleSuccess = () => {};
+  const handleSuccess = () => {
+    window.location.reload();
+  };
 
   const handleError = () => {};
 
-  const handleDelete = (itemId: string) => {};
+  const handleDelete = (itemId: string) => {
+    window.location.reload();
+  };
+
+  const handleEdit = (itemId: string) => {
+    window.location.reload();
+  };
 
   return (
     <>
-      <SearchBar type={type} onSearch={handleSearch} />
+      <SearchBar onSearch={handleSearch} organizationId={organizationId} />
       <div className="m-4 md:m-10 mx-auto max-w-7xl grid gap-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
         <NewCompCard
-          type={type}
           onAdd={handleAdd}
           onSuccess={handleSuccess}
           onError={handleError}
@@ -79,9 +87,9 @@ const ListingPage: React.FC<{
         {currentItems.map((item) => (
           <AtomicCard
             key={item.id}
-            type={type}
             data={item}
             onDelete={() => handleDelete(item.id)}
+            onEdit={() => handleEdit(item.id)}
           />
         ))}
       </div>

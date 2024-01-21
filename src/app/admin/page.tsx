@@ -13,7 +13,5 @@ export default function AdminPage() {
     return <></>;
   }
 
-  return (
-    <ListingPage type="organization" isAdmin={false} organizationId={""} />
-  );
+  return <ListingPage />;
 }

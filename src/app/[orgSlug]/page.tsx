@@ -61,7 +61,6 @@ export default function OrganizationHomePage() {
     return (
       <div>
         <ListingPage
-          type="project"
           isAdmin={dbUser?.isAdmin || false}
           organizationId={organizationId || ""}
         />
