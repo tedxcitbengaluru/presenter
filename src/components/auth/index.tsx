@@ -11,6 +11,7 @@ import { LoaderAtomic } from "../utils/loader";
 import { usePathname, useRouter, notFound } from "next/navigation";
 import { Organization, User } from "@prisma/client";
 import { toast } from "sonner";
+import LoginLoader from "../utils/loginSkeleton";
 
 export const AuthWrapper: React.FC<{
   children: React.ReactNode;
@@ -71,7 +72,7 @@ export const AuthWrapper: React.FC<{
   if (!isAuthLoaded) {
     return (
       <div className="absolute top-0 left-0 w-screen h-screen flex justify-center items-center">
-        <LoaderAtomic />
+        <LoginLoader />
       </div>
     );
   }
