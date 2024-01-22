@@ -7,10 +7,10 @@ import { supabaseClient } from "@/utils/supabaseClient";
 
 import { AuthCard } from "./card";
 import { Session } from "@supabase/supabase-js";
-import { LoaderAtomic } from "../utils/loader";
 import { usePathname, useRouter, notFound } from "next/navigation";
 import { Organization, User } from "@prisma/client";
 import { toast } from "sonner";
+import LoginLoader from "../utils/loginSkeleton";
 
 export const AuthWrapper: React.FC<{
   children: React.ReactNode;
@@ -68,22 +68,14 @@ export const AuthWrapper: React.FC<{
     return () => subscription.unsubscribe();
   }, []);
 
-  if (!isAuthLoaded) {
-    return (
-      <div className="absolute top-0 left-0 w-screen h-screen flex justify-center items-center">
-        <LoaderAtomic />
-      </div>
-    );
-  }
-
-  if (!session) {
+  if (!isAuthLoaded && !session) {
+    return <LoginLoader />;
+  } else if (!session) {
     return (
       <div className="p-8 xs:w-[80%] md:w-[50%] lg:w-[40%] xl:w-[30%] mx-auto">
         <TitleHeader />
         <AuthCard />
       </div>
     );
-  }
-
-  return <>{children}</>;
+  } else return <>{children}</>;
 };

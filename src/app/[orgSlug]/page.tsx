@@ -7,6 +7,7 @@ import ListingPage from "@/components/listingPage";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/utils/listingPageLoader";
 
 export default function OrganizationHomePage() {
   const router = useRouter();
@@ -44,11 +45,7 @@ export default function OrganizationHomePage() {
   });
 
   if (loading) {
-    return (
-      <div className="absolute top-0 left-0 w-screen h-screen flex justify-center items-center">
-        <LoaderAtomic />
-      </div>
-    );
+    return <Loader />;
   }
 
   if (!organizationExists) {
