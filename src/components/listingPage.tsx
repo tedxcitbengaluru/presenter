@@ -23,12 +23,11 @@ const ListingPage: React.FC<{
   const handleCardClick = (
     slug: string,
     orgSlug: string,
-    name: string,
+    code: string,
     createdAt: string,
   ) => {
     if (router) {
-      const formattedName = name.replace(/\s+/g, "");
-      const path = createdAt ? `/${orgSlug}/${formattedName}` : `/${slug}`;
+      const path = createdAt ? `/${orgSlug}/${code}` : `/${slug}`;
       console.log("Constructed path:", path);
       router.push(path);
     }
@@ -107,7 +106,7 @@ const ListingPage: React.FC<{
             onDelete={() => handleDelete(item.id)}
             onEdit={() => handleEdit(item.id)}
             onClick={() =>
-              handleCardClick(item.slug, orgSlug, item.name, item.createdAt)
+              handleCardClick(item.slug, orgSlug, item.code, item.createdAt)
             }
           />
         ))}
