@@ -83,15 +83,27 @@ const EditOrgAtomicCard: React.FC<EditOrgAtomicCardProps> = ({
     setSlug(data.slug);
   }, [data]);
 
+  const handleEditButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setDialogOpen(true);
+  };
+
+  const handleInnerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <>
       <Dialog open={dialogOpen} onOpenChange={() => setDialogOpen(!dialogOpen)}>
         <DialogTrigger asChild>
-          <Button className="absolute bottom-7 left-20 rounded-full ml-3">
+          <Button
+            onClick={handleEditButtonClick}
+            className="absolute bottom-7 left-20 rounded-full ml-3"
+          >
             <PencilSimple size={24} />
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px]" onClick={handleInnerClick}>
           <DialogHeader>
             <DialogTitle>Edit {data.name}</DialogTitle>
           </DialogHeader>

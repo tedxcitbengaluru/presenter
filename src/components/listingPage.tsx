@@ -11,12 +11,28 @@ import toast from "sonner";
 const ListingPage: React.FC<{
   isAdmin?: boolean;
   organizationId?: string;
+  router: any;
+  orgSlug: string;
 }> = (props) => {
-  const { isAdmin, organizationId } = props;
+  const { isAdmin, organizationId, router, orgSlug } = props;
   const [allItems, setAllItems] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredItems, setFilteredItems] = useState<any[]>([]);
   const itemsPerPage = 8;
+
+  const handleCardClick = (
+    slug: string,
+    orgSlug: string,
+    name: string,
+    createdAt: string,
+  ) => {
+    if (router) {
+      const formattedName = name.replace(/\s+/g, "");
+      const path = createdAt ? `/${orgSlug}/${formattedName}` : `/${slug}`;
+      console.log("Constructed path:", path);
+      router.push(path);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -90,6 +106,9 @@ const ListingPage: React.FC<{
             data={item}
             onDelete={() => handleDelete(item.id)}
             onEdit={() => handleEdit(item.id)}
+            onClick={() =>
+              handleCardClick(item.slug, orgSlug, item.name, item.createdAt)
+            }
           />
         ))}
       </div>

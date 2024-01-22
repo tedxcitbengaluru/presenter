@@ -6,8 +6,10 @@ import { SessionStore } from "@/store/session";
 import ListingPage from "@/components/listingPage";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function OrganizationHomePage() {
+  const router = useRouter();
   const params = useParams<{ orgSlug: string }>();
   const [organizationExists, setOrganizationExists] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -63,6 +65,8 @@ export default function OrganizationHomePage() {
         <ListingPage
           isAdmin={dbUser?.isAdmin || false}
           organizationId={organizationId || ""}
+          orgSlug={orgSlug || ""}
+          router={router}
         />
       </div>
     );

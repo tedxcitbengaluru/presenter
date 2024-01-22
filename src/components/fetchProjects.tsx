@@ -1,7 +1,6 @@
 import { supabaseClient } from "@/utils/supabaseClient";
 
 export async function fetchProjectsForOrganization(organizationId: string) {
-  console.log(organizationId);
   const { data: projectsForOrganization } = await supabaseClient
     .from("Project")
     .select("*")

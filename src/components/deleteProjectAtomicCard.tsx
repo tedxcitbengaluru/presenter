@@ -48,15 +48,27 @@ const DeleteProjectAtomicCard: React.FC<DeleteProjectAtomicCardProps> = ({
     }
   };
 
+  const handleDeleteButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setDialogOpen(true);
+  };
+
+  const handleInnerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <>
       <Dialog open={dialogOpen} onOpenChange={() => setDialogOpen(!dialogOpen)}>
         <DialogTrigger asChild>
-          <Button className="absolute bottom-7 rounded-full">
+          <Button
+            onClick={handleDeleteButtonClick}
+            className="absolute bottom-7 rounded-full"
+          >
             <Trash size={24} />
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px]" onClick={handleInnerClick}>
           <DialogHeader>
             <DialogTitle>
               Are you sure you want to delete the project?

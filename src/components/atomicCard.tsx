@@ -6,10 +6,16 @@ type AtomicCardProps = {
   data: Record<string, any>;
   onDelete: () => void;
   onEdit: () => void;
+  onClick: () => void;
 };
 
-const AtomicCard: React.FC<AtomicCardProps> = ({ data, onDelete, onEdit }) => (
-  <div>
+const AtomicCard: React.FC<AtomicCardProps> = ({
+  data,
+  onDelete,
+  onEdit,
+  onClick,
+}) => (
+  <div onClick={onClick}>
     {data.createdAt ? (
       <ProjectAtomicCard data={data} onDelete={onDelete} onEdit={onEdit} />
     ) : (

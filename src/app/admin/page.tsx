@@ -13,5 +13,5 @@ export default function AdminPage() {
     return <></>;
   }
 
-  return <ListingPage />;
+  return <ListingPage router={router} />;
 }
