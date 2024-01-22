@@ -39,12 +39,35 @@ const EditOrgAtomicCard: React.FC<EditOrgAtomicCardProps> = ({
 
   const handleEdit = async () => {
     try {
+      const trimmedSlug = slug.trim();
+      const trimmedName = name.trim();
+
       await EditOrganizationAction({
         id: data.id,
-        name: name,
+        name: trimmedName,
         description: description,
-        slug: slug,
+        slug: trimmedSlug,
       });
+
+      if (!trimmedName) {
+        toast.error("Please enter a valid organization name.");
+        return;
+      }
+
+      if (!trimmedSlug) {
+        toast.error("Please enter a valid organization slug.");
+        return;
+      } else if (trimmedSlug !== trimmedSlug.toLowerCase()) {
+        toast.error(
+          "Please enter a valid organization slug. No capital Letters allowed.",
+        );
+        return;
+      } else if (/\s/.test(trimmedSlug)) {
+        toast.error(
+          "Please enter a valid organization slug.No white Spaces allowed.",
+        );
+        return;
+      }
 
       toast.success("Organization Edited successfully.");
       handleCloseDialog();

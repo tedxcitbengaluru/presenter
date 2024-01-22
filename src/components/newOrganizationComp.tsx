@@ -31,16 +31,34 @@ const NewOrgComp: React.FC<NewOrgCompProps> = ({
     const desc = descRef.current?.value;
     const slug = slugRef.current?.value;
 
-    if (!name) {
+    const trimmedName = name?.trim();
+    const trimmedSlug = slug?.trim();
+
+    if (!trimmedName) {
       toast.error("Please enter a valid organization name.");
+      return;
+    }
+
+    if (!trimmedSlug) {
+      toast.error("Please enter a valid organization slug.");
+      return;
+    } else if (trimmedSlug !== trimmedSlug.toLowerCase()) {
+      toast.error(
+        "Please enter a valid organization slug. No capital Letters allowed.",
+      );
+      return;
+    } else if (/\s/.test(trimmedSlug)) {
+      toast.error(
+        "Please enter a valid organization slug.No white Spaces allowed.",
+      );
       return;
     }
 
     try {
       await createOrganizationAction({
-        name: name!,
+        name: trimmedName,
         description: desc!,
-        slug: slug!,
+        slug: trimmedSlug,
       });
 
       toast.success("Organization successfully created.");
@@ -101,3 +119,11 @@ const NewOrgComp: React.FC<NewOrgCompProps> = ({
 };
 
 export default NewOrgComp;
+
+// if (name){
+//   const trimmedName = name.trim();
+// }
+
+// if (slug) {
+//   const trimmedSlug = slug.trim();
+// }

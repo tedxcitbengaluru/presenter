@@ -36,8 +36,10 @@ const EditProjectAtomicCard: React.FC<EditProjectAtomicCardProps> = ({
 
   const handleCloseDialog = () => setDialogOpen(false);
 
+  const TrimmedName = name!.trim();
+
   const handleEdit = async () => {
-    if (!name) {
+    if (!TrimmedName) {
       toast.error("Please enter a valid project name.");
       return;
     }
@@ -45,7 +47,7 @@ const EditProjectAtomicCard: React.FC<EditProjectAtomicCardProps> = ({
     try {
       await EditProjectAction({
         code: data.code,
-        name: name,
+        name: TrimmedName,
         description: description,
         createdById: session!.user.id,
         organizationId: data.organizationId,

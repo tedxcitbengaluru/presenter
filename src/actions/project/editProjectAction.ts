@@ -28,11 +28,11 @@ export const EditProjectAction = generateActionService(
         },
       });
 
-      //   if (updatedProject.organization) {
-      //     revalidatePath(`/${updatedProject.organization.slug}`);
-      //   } else {
-      //     console.error("Organization not found for the updated project");
-      //   }
+      // if (updatedProject.organization) {
+      //   revalidatePath(`/${updatedProject.organization.slug}`);
+      // } else {
+      //   console.error("Organization not found for the updated project");
+      // }
     } catch (error) {
       console.error(error);
       throw "Failed to update the project.";

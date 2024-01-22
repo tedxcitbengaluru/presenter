@@ -32,14 +32,16 @@ const NewProjectComp: React.FC<NewProjectCompProps> = ({
   const [description, setDescription] = useState(descRef.current?.value || "");
 
   const handleSaveChanges = async () => {
-    if (!name) {
+    const TrimmedName = name!.trim();
+
+    if (!TrimmedName) {
       toast.error("Please enter a valid project name.");
       return;
     }
 
     try {
       await createProjectAction({
-        name: name,
+        name: TrimmedName,
         description: description,
         createdById: session!.user.id,
         organizationId: organizationId,
