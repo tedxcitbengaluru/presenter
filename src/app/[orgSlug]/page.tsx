@@ -6,8 +6,11 @@ import { SessionStore } from "@/store/session";
 import ListingPage from "@/components/listingPage";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import ListingPageLoader from "@/components/utils/listingPageLoader";
 
 export default function OrganizationHomePage() {
+  const router = useRouter();
   const params = useParams<{ orgSlug: string }>();
   const [organizationExists, setOrganizationExists] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -42,11 +45,7 @@ export default function OrganizationHomePage() {
   });
 
   if (loading) {
-    return (
-      <div className="absolute top-0 left-0 w-screen h-screen flex justify-center items-center">
-        <LoaderAtomic />
-      </div>
-    );
+    return <ListingPageLoader />;
   }
 
   if (!organizationExists) {
@@ -61,9 +60,10 @@ export default function OrganizationHomePage() {
     return (
       <div>
         <ListingPage
-          type="project"
           isAdmin={dbUser?.isAdmin || false}
           organizationId={organizationId || ""}
+          orgSlug={orgSlug || ""}
+          router={router}
         />
       </div>
     );
