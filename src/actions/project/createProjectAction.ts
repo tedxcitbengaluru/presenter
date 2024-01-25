@@ -2,11 +2,11 @@
 
 import { generateActionService } from "@/utils/generateActionService";
 import { prisma } from "@/utils/prisma";
-import { ZPrisma } from "@/utils/prismaTypes";
+import { ZPrismaInput } from "@/utils/prismaTypes";
 import { revalidatePath } from "next/cache";
 
 export const createProjectAction = generateActionService(
-  ZPrisma.Project.omit({ id: true, createdAt: true }),
+  ZPrismaInput.Project.omit({ id: true, createdAt: true }),
   async (input) => {
     try {
       const projectResult = await prisma.project.create({

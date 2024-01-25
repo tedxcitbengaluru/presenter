@@ -2,11 +2,11 @@
 
 import { generateActionService } from "@/utils/generateActionService";
 import { prisma } from "@/utils/prisma";
-import { ZPrisma } from "@/utils/prismaTypes";
+import { ZPrismaInput } from "@/utils/prismaTypes";
 import { revalidatePath } from "next/cache";
 
 export const createOrganizationAction = generateActionService(
-  ZPrisma.Organization.omit({ id: true }),
+  ZPrismaInput.Organization.omit({ id: true }),
   async (input) => {
     try {
       await prisma.organization.create({

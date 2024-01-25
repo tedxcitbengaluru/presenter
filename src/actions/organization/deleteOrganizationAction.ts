@@ -2,16 +2,16 @@
 
 import { generateActionService } from "@/utils/generateActionService";
 import { prisma } from "@/utils/prisma";
-import { ZPrisma } from "@/utils/prismaTypes";
+import { ZPrismaOutput } from "@/utils/prismaTypes";
 import { revalidatePath } from "next/cache";
 
 export const deleteOrganizationAction = generateActionService(
-  ZPrisma.Organization.pick({ slug: true }),
+  ZPrismaOutput.Organization.pick({ id: true }),
   async (input) => {
     try {
       await prisma.organization.delete({
         where: {
-          slug: input.slug,
+          id: input.id,
         },
       });
 

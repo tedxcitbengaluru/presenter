@@ -2,19 +2,18 @@
 
 import { generateActionService } from "@/utils/generateActionService";
 import { prisma } from "@/utils/prisma";
-import { ZPrisma } from "@/utils/prismaTypes";
+import { ZPrismaOutput } from "@/utils/prismaTypes";
 import { revalidatePath } from "next/cache";
 
 export const deleteProjectAction = generateActionService(
-  ZPrisma.Project.pick({
-    code: true,
-  }).merge(ZPrisma.Organization.pick({ slug: true })),
+  ZPrismaOutput.Project.pick({
+    id: true,
+  }).merge(ZPrismaOutput.Organization.pick({ slug: true })),
   async (input) => {
     try {
-      const deletedProject = await prisma.project.delete({
+      await prisma.project.delete({
         where: {
-          //@ts-ignore
-          code: input.code,
+          id: input.id,
         },
       });
 

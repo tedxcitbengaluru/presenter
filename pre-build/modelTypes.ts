@@ -21,11 +21,15 @@ const ZType = {
     Uuid: z.string().uuid()
 };
 
-export const ZPrisma = {
+export const ZPrismaInput = {
 `;
 
 const EndingZodFileContent = `
 }`;
+
+const InitialZodFileOutputContent = `
+export const ZPrismaOutput = {
+`;
 
 const ValidPrismaTypes = [
   "String",
@@ -38,6 +42,8 @@ const ValidPrismaTypes = [
 
 const prismaEnumList: string[] = [];
 
+let PrismaTypeMode: "Input" | "Output" = "Input";
+
 const formatField = (model: Model, field: Field) => {
   if (typeof field.fieldType !== "string") return null;
 
@@ -47,13 +53,16 @@ const formatField = (model: Model, field: Field) => {
   const fieldKeyString = `${field.name}: `;
   let fieldValueString: string | null = null;
 
-  const optionalString = `${
-    field.optional ||
-    field.attributes?.find((a) => a.name === "default") != null ||
-    field.attributes?.find((a) => a.name === "updatedAt") != null
-      ? ".nullish()"
-      : ""
-  }`;
+  const optionalString =
+    PrismaTypeMode === "Input"
+      ? `${
+          field.optional ||
+          field.attributes?.find((a) => a.name === "default") != null ||
+          field.attributes?.find((a) => a.name === "updatedAt") != null
+            ? ".optional()"
+            : ""
+        }`
+      : `${field.optional ? ".nullable().transform(x=>undefined)" : ""}`;
 
   if (field.attributes?.find((a) => a.name === "Uuid")) {
     return fieldKeyString + `ZType.Uuid` + optionalString;
@@ -90,7 +99,7 @@ const formatModel = (model: Model) =>
     }),
 `;
 
-export const generateModelTypes = async () => {
+const preModelInput = () => {
   const filepath = path.resolve(__dirname, "../prisma/schema.prisma");
   const outputFilePath = path.resolve(
     __dirname,
@@ -116,18 +125,32 @@ import {
 } from '@prisma/client';
 `,
   );
-  fs.appendFileSync(outputFilePath, InitialZodFileContent);
 
+  console.log(`${JSON.stringify(prismaEnumList, null, 2)}`);
+
+  return { prismaSchema, outputFilePath };
+};
+
+export const generateModelTypes = () => {
+  const { prismaSchema, outputFilePath } = preModelInput();
   const prismaModels = prismaSchema.list.filter(
     (x) => x.type === "model",
   ) as Model[];
 
   console.log(`${JSON.stringify(prismaModels, null, 2)}`);
-  console.log(`${JSON.stringify(prismaEnumList, null, 2)}`);
 
+  // Input Types
+  fs.appendFileSync(outputFilePath, InitialZodFileContent);
   prismaModels.forEach((model) => {
     fs.appendFileSync(outputFilePath, formatModel(model));
   });
+  fs.appendFileSync(outputFilePath, EndingZodFileContent);
 
+  // Output Types
+  PrismaTypeMode = "Output";
+  fs.appendFileSync(outputFilePath, InitialZodFileOutputContent);
+  prismaModels.forEach((model) => {
+    fs.appendFileSync(outputFilePath, formatModel(model));
+  });
   fs.appendFileSync(outputFilePath, EndingZodFileContent);
 };

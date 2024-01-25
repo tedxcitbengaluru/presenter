@@ -4,7 +4,7 @@ import * as path from "path";
 import { Model, Enum, Field, getSchema } from "@mrleebo/prisma-ast";
 
 const InitialZodFileContent = `
-import { ZPrisma } from './model';
+import { ZPrismaOutput } from './model';
 
 export const ZPrismaExt = {
 `;
@@ -54,14 +54,14 @@ const formatField = (model: Model, field: Field) => {
   return (
     fieldKeyString +
     arrayStringStart +
-    `ZPrisma.${refModelName}` +
+    `ZPrismaOutput.${refModelName}` +
     optionalString +
     arrayStringEnd
   );
 };
 
 const formatModel = (model: Model) =>
-  `${model.name} : ZPrisma.${model.name}.extend({
+  `${model.name} : ZPrismaOutput.${model.name}.extend({
         ${(model.properties.filter((x) => x.type === "field") as Field[])
           .map((x) => formatField(model, x))
           .filter((x) => x != null)
@@ -69,7 +69,7 @@ const formatModel = (model: Model) =>
     }),
 `;
 
-export const generateExtendedTypes = async () => {
+export const generateExtendedTypes = () => {
   const filepath = path.resolve(__dirname, "../prisma/schema.prisma");
   const outputFilePath = path.resolve(
     __dirname,
