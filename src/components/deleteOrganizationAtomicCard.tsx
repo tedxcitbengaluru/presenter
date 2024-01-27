@@ -37,7 +37,7 @@ const DeleteOrgAtomicCard: React.FC<DeleteOrgAtomicCardProps> = ({
 
     try {
       await deleteOrganizationAction({
-        slug: data.slug,
+        id: data.id,
       });
 
       handleCloseDialog();

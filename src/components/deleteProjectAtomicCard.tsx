@@ -37,8 +37,8 @@ const DeleteProjectAtomicCard: React.FC<DeleteProjectAtomicCardProps> = ({
 
     try {
       await deleteProjectAction({
+        id: data.id,
         slug: "",
-        code: data.code,
       });
 
       handleCloseDialog();

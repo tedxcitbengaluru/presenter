@@ -23,5 +23,5 @@ const AtomicCard: React.FC<AtomicCardProps> = ({
     )}
   </div>
 );
-
+// TODO
 export default AtomicCard;

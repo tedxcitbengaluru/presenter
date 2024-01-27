@@ -38,7 +38,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <AuthWrapper>{children}</AuthWrapper>
+          {/* <AuthWrapper>{children}</AuthWrapper> */}
+          {children}
         </ThemeProvider>
         <Toaster richColors closeButton />
       </body>

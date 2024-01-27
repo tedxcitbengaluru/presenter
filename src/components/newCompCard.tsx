@@ -49,15 +49,17 @@ const NewCompCard: React.FC<NewCompCardProps> = ({
 
   return (
     <Card className="lg:w-[315px] h-[220px] xl:w-[400px] h-[220px] md:w-[350px] h-[220px] md:mx-5 lg:mx-2 sm:mx-10">
-      <CardContent className="flex flex-col justify-center items-center h-full">
+      <CardHeader>
         <CardTitle className="text-center text-lg font-semibold">
           Create new {organizationId ? "project" : "organization"}
         </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col justify-center items-center h-full">
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button
               variant="ghost"
-              className="transition duration-150 ease-out hover:ease-in size-32 rounded-full my-1  mx-20"
+              className="transition duration-150 ease-out hover:ease-in size-32 rounded-full "
             >
               <PlusCircle size={128} />
             </Button>

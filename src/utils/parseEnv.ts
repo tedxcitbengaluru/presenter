@@ -1,5 +1,9 @@
 import { ZodTypeDef, z } from "zod";
 
+const logIfDevelopment = (log: string) => {
+  if (process.env.NODE_ENV === "development") console.log(log);
+};
+
 export function parseEnv<
   TOutput,
   TDef extends ZodTypeDef = ZodTypeDef,
@@ -10,11 +14,11 @@ export function parseEnv<
   envObject = process.env as any,
 ) {
   try {
-    console.log(`${appName} ENV Validation Started!`);
+    logIfDevelopment(`${appName} ENV Validation Started!`);
     const parsedEnv = envSchema.parse(envObject);
-    console.log(`${appName} ENV Validation Finished!`);
-    if (process.env.NODE_ENV === "development")
-      console.log(`ENV: ${JSON.stringify(parsedEnv, null, 4)}`);
+
+    logIfDevelopment(`${appName} ENV Validation Finished!`);
+    logIfDevelopment(`ENV: ${JSON.stringify(parsedEnv, null, 4)}`);
 
     return parsedEnv;
   } catch (error) {

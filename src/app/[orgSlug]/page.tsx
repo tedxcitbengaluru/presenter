@@ -1,73 +1,55 @@
-"use client";
-import { notFound, useParams } from "next/navigation";
-import { supabaseClient } from "@/utils/supabaseClient";
-import { LoaderAtomic } from "@/components/utils/loader";
-import { SessionStore } from "@/store/session";
-import ListingPage from "@/components/listingPage";
-import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import ListingPageLoader from "@/components/utils/listingPageLoader";
+import React from "react";
+import CardList from "@/components/card/list";
 
-export default function OrganizationHomePage() {
-  const router = useRouter();
-  const params = useParams<{ orgSlug: string }>();
-  const [organizationExists, setOrganizationExists] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const { dbUser, orgSlug } = SessionStore();
-  const [organizationId, setOrganizationId] = useState<string | undefined>();
+// export default function OrganizationHomePage() {
+//   return (
+//     <CardList
+//       className="h-screen justify-start pt-16"
+//       showInitialAddCard
+//       listItems={[
+//         {
+//           header: "This is a card",
+//           content: <div>Hello</div>,
+//         },
+//         {
+//           header: "This is a card",
 
-  useEffect(() => {
-    const fetchOrganization = async () => {
-      try {
-        const organizationQuery = await supabaseClient
-          .from("Organization")
-          .select("id, slug")
-          .eq("slug", params.orgSlug)
-          .single();
+//           content: <div>Hello</div>,
+//         },
+//         {
+//           header: "This is a card",
 
-        const fetchedOrganizationId = organizationQuery.data?.id;
+//           content: <div>Hello</div>,
+//         },
+//         {
+//           header: "This is a card",
 
-        if (!organizationQuery.data) {
-          toast.error("Couldn't find the organization.");
-          setOrganizationExists(false);
-        }
+//           content: <div>Hello</div>,
+//         },
+//         {
+//           header: "This is a card",
 
-        setOrganizationId(fetchedOrganizationId);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching organization:", error);
-        setLoading(false);
-      }
-    };
+//           content: <div>Hello</div>,
+//         },
+//         {
+//           header: "This is a card",
 
-    fetchOrganization();
-  });
+//           content: <div>Hello</div>,
+//         },
+//         {
+//           header: "This is a card",
 
-  if (loading) {
-    return <ListingPageLoader />;
-  }
+//           content: <div>Hello</div>,
+//         },
+//         {
+//           header: "This is a card",
 
-  if (!organizationExists) {
-    notFound();
-  }
-
-  if (!dbUser?.isAdmin && orgSlug !== params.orgSlug) {
-    notFound();
-  } else if (dbUser?.isAdmin && orgSlug !== params.orgSlug) {
-    return <>Not Authorized to view</>;
-  } else
-    return (
-      <div>
-        <ListingPage
-          isAdmin={dbUser?.isAdmin || false}
-          organizationId={organizationId || ""}
-          orgSlug={orgSlug || ""}
-          router={router}
-        />
-      </div>
-    );
-}
+//           content: <div>Hello</div>,
+//         },
+//       ]}
+//     />
+//   );
+// }
 
 // ListingPage---- (data, newCompProps, atomicCard, onAdd, onSucces, onEerr)
 
@@ -77,34 +59,58 @@ export default function OrganizationHomePage() {
 //     atomicCard
 // Pagination
 
-// import { Projects } from "@/components/test/Projects";
-// import { OrganizationAccessWrapper } from "@/components/OrganizationAccessWrapper";
-// import { Suspense } from "react";
-// export default async function OrganizationHomePage({
-//   params,
-// }: {
-//   params: { orgSlug: string };
-// }) {
+import { OrganizationAccessWrapper } from "@/components/OrganizationAccessWrapper";
+import { Suspense } from "react";
+import { supabaseClient } from "@/utils/supabaseClient";
+import { LoaderAtomic } from "@/components/utils/loader";
+import { notFound } from "next/navigation";
+import { ZPrismaOutput } from "@/utils/prismaTypes";
+import { z } from "zod";
+export default async function OrganizationHomePage({
+  params,
+}: {
+  params: { orgSlug: string };
+}) {
+  const organizationQuery = await supabaseClient
+    .from("Organization")
+    .select(
+      `
+    slug, 
+    id,
+    Project (
+      code
+    )
+    `,
+    )
+    .eq("slug", params.orgSlug)
+    .single();
 
-//   const organizationQuery = await supabaseClient
-//     .from("Organization")
-//     .select("slug, id")
-//     .eq("slug", params.orgSlug)
-//     .single();
+  if (!organizationQuery.data) {
+    notFound();
+  }
 
-//   if (!organizationQuery.data) {
-//     notFound();
-//   }
+  // const projects = z
+  //   .array(ZPrismaOutput.Project)
+  //   .safeParse(organizationQuery.data.Project);
 
-//   return (
-//     <>
-//       <OrganizationAccessWrapper>
-//         <div>Projects</div>
-//         <Suspense fallback={<LoaderAtomic />}>
-//           <Projects orgId={organizationQuery.data.id} />
-//         </Suspense>
-//       </OrganizationAccessWrapper>
-//       <div>{params.orgSlug}</div>
-//     </>
-//   );
-// }
+  console.log("P", organizationQuery.data.Project);
+
+  // if (!projects.success) {
+  // console.log(projects.error);
+  return <div>{typeof window === "undefined" ? "YO" : "NO"}</div>;
+  // }
+  // return (
+  //   <>
+  //     <div>Boink{typeof window === "undefined"}</div>
+  //     <OrganizationAccessWrapper>
+  //       <div>Projects</div>
+  //       <Suspense fallback={<LoaderAtomic />}>
+  //         {projects.data.map((project, index) => (
+  //           <div key={index}>{project.code}</div>
+  //         ))}
+  //       </Suspense>
+  //     </OrganizationAccessWrapper>
+  //     <div>{params.orgSlug}</div>
+  //   </>
+  // );
+}

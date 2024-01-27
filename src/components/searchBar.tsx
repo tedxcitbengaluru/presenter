@@ -1,36 +1,29 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 
 interface SearchBarProps {
-  onSearch: (searchTerm: string) => void;
-  organizationId?: string;
+  onSearch?: (searchTerm: string) => void;
+  placeHolder?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, organizationId }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeHolder }) => {
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    const term = event.target.value;
-    setSearchTerm(term);
-    onSearch(term);
+    if (onSearch) onSearch(event.target.value);
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="flex items-center px-3 mt-10 mb-10 rounded-lg border shadow-md w-1/4">
+    <div className="flex items-center px-3 mt-10 mb-10 rounded-lg border focus-within:border-white hover:border-white duration-150 shadow-md w-1/4">
+      <button className="mr-2 group hover:bg-transparent">
         <MagnifyingGlass
           size={24}
-          className="mr-2 h-4 w-4 shrink-0 opacity-50"
+          className="h-4 w-4 shrink-0 opacity-50 group-hover:scale-125 group-hover:opacity-100 duration-100"
         />
-        <input
-          placeholder={
-            organizationId ? "Search projects" : "Search organizations"
-          }
-          value={searchTerm}
-          onChange={handleSearch}
-          className="flex h-10 border-dotted rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-        />
-      </div>
+      </button>
+      <input
+        placeholder={placeHolder ?? "Search"}
+        onChange={handleSearch}
+        className="tracking-wider flex w-full h-10 rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+      />
     </div>
   );
 };
