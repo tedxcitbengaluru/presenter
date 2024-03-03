@@ -1,15 +1,15 @@
-import { ZPrisma } from "./model";
+import { ZPrismaOutput } from "./model";
 
 export const ZPrismaExt = {
-  User: ZPrisma.User.extend({
-    organization: ZPrisma.Organization.nullish(),
+  User: ZPrismaOutput.User.extend({
+    organization: ZPrismaOutput.Organization.nullish(),
   }),
-  Organization: ZPrisma.Organization.extend({}),
-  Project: ZPrisma.Project.extend({
-    createdBy: ZPrisma.User,
-    organization: ZPrisma.Organization,
+  Organization: ZPrismaOutput.Organization.extend({}),
+  Project: ZPrismaOutput.Project.extend({
+    createdBy: ZPrismaOutput.User,
+    organization: ZPrismaOutput.Organization,
   }),
-  Media: ZPrisma.Media.extend({
-    createdBy: ZPrisma.User,
+  Media: ZPrismaOutput.Media.extend({
+    createdBy: ZPrismaOutput.User,
   }),
 };

@@ -3,10 +3,9 @@ import "./globals.css";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/utils/themeProvider";
-import { ThemeToggle } from "@/components/utils/themeToggle";
-import { AuthWrapper } from "@/components/auth";
 import { Navbar } from "@/components/navbar";
+import { InitializeAuth } from "@/components/auth/init";
+import { Providers } from "@/components/utils/providers";
 
 export const metadata: Metadata = {
   title: "Presenter",
@@ -32,15 +31,11 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <InitializeAuth />
+        <Providers>
           <Navbar />
-          <AuthWrapper>{children}</AuthWrapper>
-        </ThemeProvider>
+          {children}
+        </Providers>
         <Toaster richColors closeButton />
       </body>
     </html>

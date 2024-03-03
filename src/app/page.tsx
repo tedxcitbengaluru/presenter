@@ -1,13 +1,21 @@
-import { SampleServerComponent } from "@/sample/sampleAsync";
-import { Suspense } from "react";
+"use client";
 
-export default function Home() {
+import { LoaderAtomic } from "@/components/utils/loader";
+import { SessionStore } from "@/store/session";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+export default function HomePage() {
+  const { orgSlug } = SessionStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (orgSlug) router.push(`/dashboard/${orgSlug}`);
+  }, [orgSlug]);
+
   return (
-    <main>
-      {/* <Suspense fallback={<div>Loading...</div>}>
-        <SampleServerComponent />
-      </Suspense> */}
-      Hello World
-    </main>
+    <div className="w-screen h-screen flex justify-center items-center">
+      <LoaderAtomic className="w-16 h-16" />
+    </div>
   );
 }
