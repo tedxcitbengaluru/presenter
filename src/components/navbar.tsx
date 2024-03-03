@@ -1,23 +1,23 @@
 "use client";
-
-import { SessionStore } from "@/store/session";
 import { ThemeToggle } from "./utils/themeToggle";
 import { Button } from "./ui/button";
-import { supabaseClient } from "@/utils/supabaseClient";
+import { SessionStore } from "@/store/session";
+import { LoaderAtomic } from "./utils/loader";
+import { SingOutButton } from "./utils/signOutButton";
 import { useRouter } from "next/navigation";
 
 export const Navbar: React.FC = () => {
-  const { session, dbUser } = SessionStore();
+  const { dbUser, isSessionLoaded } = SessionStore();
+
   const router = useRouter();
 
   return (
-    <div className="fixed px-8 py-4 w-full flex gap-8 justify-end">
-      {session && dbUser?.isAdmin && (
+    <div className="fixed px-8 py-4 w-full flex items-center gap-8 justify-end">
+      {isSessionLoaded === false && <LoaderAtomic />}
+      {isSessionLoaded === true && dbUser.isAdmin && (
         <Button onClick={() => router.push("/admin")}>Admin View</Button>
       )}
-      {session && (
-        <Button onClick={() => supabaseClient.auth.signOut()}>Sign Out</Button>
-      )}
+      {isSessionLoaded === true && <SingOutButton />}
       <ThemeToggle />
     </div>
   );

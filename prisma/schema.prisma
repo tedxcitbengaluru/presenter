@@ -8,21 +8,20 @@ generator client {
 }
 
 model User {
-    id             String        @id @default(uuid()) @db.Uuid
-    username       String        @unique 
-    fullname       String?        
+    id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    username       String        @unique
+    fullname       String?
     isAdmin        Boolean       @default(false)
     Media          Media[]
     organizationId String?       @db.Uuid
     organization   Organization? @relation(fields: [organizationId], references: [id])
     Project        Project[]
-    
 }
 
 model Organization {
-    id          String    @id @default(uuid()) @db.Uuid
-    name        String    
-    slug        String    @unique 
+    id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    name        String
+    slug        String    @unique
     description String?
     User        User[]
     Project     Project[]
@@ -36,11 +35,11 @@ enum MediaType {
 }
 
 model Project {
-    id             String       @id @default(uuid()) @db.Uuid
+    id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     name           String
     description    String?
-    code           Int          @unique @default(autoincrement()) 
-    createdById    String       @db.Uuid
+    code           Int          @unique @default(autoincrement())
+    createdById    String       @default(dbgenerated("auth.uid()")) @db.Uuid
     createdBy      User         @relation(fields: [createdById], references: [id])
     createdAt      DateTime     @default(now()) @db.Timestamp()
     organization   Organization @relation(fields: [organizationId], references: [id])
@@ -48,12 +47,12 @@ model Project {
 }
 
 model Media {
-    id          String    @id @default(uuid()) @db.Uuid
+    id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     type        MediaType
     createdAt   DateTime  @default(now()) @db.Timestamp()
-    createdById String    @db.Uuid
+    createdById String    @default(dbgenerated("auth.uid()")) @db.Uuid
     createdBy   User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
     metadata    Json?
     path        String
-    bucketName  String 
+    bucketName  String
 }

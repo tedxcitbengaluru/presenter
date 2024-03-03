@@ -62,7 +62,7 @@ const formatField = (model: Model, field: Field) => {
             ? ".optional()"
             : ""
         }`
-      : `${field.optional ? ".nullable().transform(x=>undefined)" : ""}`;
+      : `${field.optional ? ".nullable()" : ""}`;
 
   if (field.attributes?.find((a) => a.name === "Uuid")) {
     return fieldKeyString + `ZType.Uuid` + optionalString;

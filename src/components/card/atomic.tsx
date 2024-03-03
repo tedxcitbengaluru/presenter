@@ -16,14 +16,25 @@ export type AtomicCardProps = {
   content?: ReactNode;
   footer?: ReactNode;
   className?: ClassNameValue;
+  contentClassName?: ClassNameValue;
+  disableScaleOnHover?: boolean;
+  disableDefaultMinWidth?: boolean;
+  disableDefaultMinHeight?: boolean;
+  disableCursorOnHover?: boolean;
+  disableBorderOnHover?: boolean;
 };
 
 const AtomicCard: React.FC<AtomicCardProps> = (props) => {
   return (
     <Card
       className={cn(
-        "relative",
-        "max-w-[400px] cursor-pointer hover:scale-105 hover:border-white duration-150",
+        "relative ",
+        "max-w-[400px] duration-150",
+        !props.disableDefaultMinWidth ? "min-w-[400px]" : "",
+        !props.disableDefaultMinHeight ? "min-h-[200px]" : "",
+        !props.disableCursorOnHover ? "cursor-pointer" : "",
+        !props.disableBorderOnHover ? "hover:border-white" : "",
+        !props.disableScaleOnHover ? "hover:scale-105" : "",
         props.className,
       )}
     >
@@ -40,12 +51,16 @@ const AtomicCard: React.FC<AtomicCardProps> = (props) => {
         <></>
       )}
       {props.content ? (
-        <CardContent className="p-6">{props.content}</CardContent>
+        <CardContent
+          className={cn("pl-6 duration-150", props.contentClassName)}
+        >
+          {props.content}
+        </CardContent>
       ) : (
         <></>
       )}
       {props.footer ? (
-        <CardFooter className="flex justify-between">{props.footer}</CardFooter>
+        <CardFooter className="duration-150">{props.footer}</CardFooter>
       ) : (
         <></>
       )}

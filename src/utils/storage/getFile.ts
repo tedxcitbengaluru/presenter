@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { supabaseClient } from "../supabaseClient";
+import { staticSupabaseClient } from "../staticSupabaseClient";
 
 const prisma = new PrismaClient();
 
@@ -12,7 +12,7 @@ export const GetFileService = async (mediaId: string) => {
     });
 
     return {
-      url: supabaseClient.storage
+      url: staticSupabaseClient.storage
         .from(media.bucketName)
         .getPublicUrl(media.path).data.publicUrl,
       media,
