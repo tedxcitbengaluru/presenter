@@ -10,8 +10,7 @@ import SearchBar from "../utils/searchBar";
 import AtomicCard, { AtomicCardProps } from "./atomic";
 import { ClassNameValue } from "tailwind-merge";
 import { cn } from "@/lib/utils";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { SessionStore } from "@/store/session";
+import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "../ui/button";
 import { PencilSimple, PlusCircle, Trash } from "@phosphor-icons/react";
@@ -48,7 +47,7 @@ type CardListProps = {
   className?: ClassNameValue;
   listHeader?: ReactNode;
 
-  initialData: TQueryData;
+  initialData?: TQueryData;
   refetchQueryKey: string[];
   refetchQueryFunction: (input: {
     firstPageIndex: number;
@@ -66,7 +65,7 @@ const CardList: React.FC<CardListProps> = (props) => {
   const searchParams = useSearchParams();
 
   const [totalPages, setTotalPages] = useState(
-    Math.max(1, Math.ceil(props.initialData.count / 5)),
+    Math.max(1, Math.ceil((props.initialData?.count ?? 0) / 5)),
   );
   const [currentPage, setCurrentPage] = useState(
     Math.max(

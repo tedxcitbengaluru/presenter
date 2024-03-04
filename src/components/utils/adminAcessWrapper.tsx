@@ -8,11 +8,10 @@ import { Button } from "../ui/button";
 import { SingOutButton } from "./signOutButton";
 import { LoaderAtomic } from "./loader";
 
-export const OrganizationAccessWrapper: React.FC<{
+export const AdminAccessWrapper: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
   const { dbUser, orgSlug, isSessionLoaded } = SessionStore();
-  const params = useParams<{ orgSlug: string }>();
   const router = useRouter();
 
   if (!isSessionLoaded) {
@@ -23,7 +22,7 @@ export const OrganizationAccessWrapper: React.FC<{
     );
   }
 
-  if (dbUser.isAdmin || params.orgSlug === orgSlug) {
+  if (dbUser.isAdmin) {
     return <>{children}</>;
   }
 

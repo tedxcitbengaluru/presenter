@@ -81,61 +81,59 @@ export default async function OrganizationHomePage({
   };
 
   return (
-    <>
-      <OrganizationAccessWrapper>
-        <div className="w-screen pt-32  flex justify-start items-center">
-          <CardList
-            listHeader={organization.name + "'s " + "Projects"}
-            initialData={projectsResponse}
-            refetchQueryKey={["projects"]}
-            refetchQueryFunction={getProjects}
-            createDialogOptions={{
-              items: [
-                {
-                  key: "name",
-                  label: {
-                    text: "Name",
-                  },
-                  input: {
-                    placeHolder: "Enter your project name",
-                  },
+    <OrganizationAccessWrapper>
+      <div className="w-screen pt-32  flex justify-start items-center">
+        <CardList
+          listHeader={organization.name + "'s " + "Projects"}
+          initialData={projectsResponse}
+          refetchQueryKey={["projects"]}
+          refetchQueryFunction={getProjects}
+          createDialogOptions={{
+            items: [
+              {
+                key: "name",
+                label: {
+                  text: "Name",
                 },
-              ],
-              action: createProject,
-              successMessage: "Project Created!",
-              errorMessage: "Failed!",
-            }}
-            updateDialogOptions={{
-              items: [
-                {
-                  key: "name",
-                  label: {
-                    text: "Name",
-                  },
-                  input: {
-                    placeHolder: "Enter your project name",
-                  },
+                input: {
+                  placeHolder: "Enter your project name",
                 },
-                {
-                  key: "description",
-                  label: {
-                    text: "Description",
-                  },
-                  textarea: {
-                    placeHolder: "Enter your project description",
-                  },
+              },
+            ],
+            action: createProject,
+            successMessage: "Project Created!",
+            errorMessage: "Failed!",
+          }}
+          updateDialogOptions={{
+            items: [
+              {
+                key: "name",
+                label: {
+                  text: "Name",
                 },
-              ],
-              action: updateProject,
-              successMessage: "Project Updated!",
-            }}
-            deleteDialogOptions={{
-              action: deleteProject,
-              successMessage: "Project Deleted!",
-            }}
-          />
-        </div>
-      </OrganizationAccessWrapper>
-    </>
+                input: {
+                  placeHolder: "Enter your project name",
+                },
+              },
+              {
+                key: "description",
+                label: {
+                  text: "Description",
+                },
+                textarea: {
+                  placeHolder: "Enter your project description",
+                },
+              },
+            ],
+            action: updateProject,
+            successMessage: "Project Updated!",
+          }}
+          deleteDialogOptions={{
+            action: deleteProject,
+            successMessage: "Project Deleted!",
+          }}
+        />
+      </div>
+    </OrganizationAccessWrapper>
   );
 }
