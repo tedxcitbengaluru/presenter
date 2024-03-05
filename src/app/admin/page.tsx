@@ -1,7 +1,4 @@
-import AtomicCard from "@/components/card/atomic";
 import CardList from "@/components/card/list";
-import { Button } from "@/components/ui/button";
-import { LoaderAtomic } from "@/components/utils/loader";
 import { ServerActions } from "@/server";
 import { AdminAccessWrapper } from "@/components/utils/adminAcessWrapper";
 
@@ -10,21 +7,21 @@ export default async function AdminPage({
 }: {
   searchParams: { currentPage?: string };
 }) {
-  const firstPageIndex =
-    (Math.max(1, Number(searchParams.currentPage ?? 0)) - 1) * 5;
-  const lastPageIndex = firstPageIndex + 5 - 1;
+  // const firstPageIndex =
+  //   (Math.max(1, Number(searchParams.currentPage ?? 0)) - 1) * 5;
+  // const lastPageIndex = firstPageIndex + 5 - 1;
 
-  const orgResponse = await ServerActions.Organizations.getOrganizations({
-    firstPageIndex,
-    lastPageIndex,
-  });
+  // const orgResponse = await ServerActions.Organizations.getOrganizations({
+  //   firstPageIndex,
+  //   lastPageIndex,
+  // });
 
   return (
     <AdminAccessWrapper>
       <div className="w-screen pt-32  flex justify-start items-center">
         <CardList
           listHeader={"All " + "Organizations"}
-          initialData={orgResponse}
+          // initialData={orgResponse}
           refetchQueryKey={["orgs"]}
           refetchQueryFunction={ServerActions.Organizations.getOrganizations}
           createDialogOptions={{

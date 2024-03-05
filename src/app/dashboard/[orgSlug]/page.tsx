@@ -12,9 +12,9 @@ export default async function OrganizationHomePage({
   params: { orgSlug: string };
   searchParams: { currentPage?: string };
 }) {
-  const firstPageIndex =
-    (Math.max(1, Number(searchParams.currentPage ?? 0)) - 1) * 5;
-  const lastPageIndex = firstPageIndex + 5 - 1;
+  // const firstPageIndex =
+  //   (Math.max(1, Number(searchParams.currentPage ?? 0)) - 1) * 5;
+  // const lastPageIndex = firstPageIndex + 5 - 1;
 
   const organization = await ServerActions.Organizations.getBySlug({
     slug: params.orgSlug,
@@ -48,10 +48,10 @@ export default async function OrganizationHomePage({
     };
   };
 
-  const projectsResponse = await getProjects({
-    firstPageIndex,
-    lastPageIndex,
-  });
+  // const projectsResponse = await getProjects({
+  //   firstPageIndex,
+  //   lastPageIndex,
+  // });
 
   const createProject = async (input: any) => {
     "use server";
@@ -85,7 +85,7 @@ export default async function OrganizationHomePage({
       <div className="w-screen pt-32  flex justify-start items-center">
         <CardList
           listHeader={organization.name + "'s " + "Projects"}
-          initialData={projectsResponse}
+          // initialData={projectsResponse}
           refetchQueryKey={["projects"]}
           refetchQueryFunction={getProjects}
           createDialogOptions={{

@@ -22,6 +22,7 @@ export type AtomicCardProps = {
   disableDefaultMinHeight?: boolean;
   disableCursorOnHover?: boolean;
   disableBorderOnHover?: boolean;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 };
 
 const AtomicCard: React.FC<AtomicCardProps> = (props) => {
@@ -37,6 +38,7 @@ const AtomicCard: React.FC<AtomicCardProps> = (props) => {
         !props.disableScaleOnHover ? "hover:scale-105" : "",
         props.className,
       )}
+      onClick={props.onClick}
     >
       {props.header || props.description ? (
         <CardHeader>

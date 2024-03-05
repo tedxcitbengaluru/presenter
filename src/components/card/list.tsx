@@ -32,7 +32,7 @@ type TQueryData = {
   data: (Pick<
     AtomicCardProps,
     "header" | "description" | "footer" | "content"
-  > & { data: { [key: string]: any } })[];
+  > & { data: { [key: string]: any }; onCardClickRoute?: string })[];
   count: number;
 };
 
@@ -107,7 +107,6 @@ const CardList: React.FC<CardListProps> = (props) => {
       return response;
     },
     initialData: props.initialData,
-    refetchOnMount: false,
   });
 
   return (
@@ -160,7 +159,10 @@ const CardList: React.FC<CardListProps> = (props) => {
         query.isPending ||
         query.isRefetching ? (
           <>
-            {[1, 2, 3, 4, 5].map((_) => (
+            {Array.from(
+              { length: query.data?.data.length ?? 5 },
+              (_, i) => i,
+            ).map((_) => (
               <AtomicCard
                 key={"skeleton" + _}
                 header={<Skeleton className="h-[25px] w-3/4 rounded-lg" />}
@@ -174,7 +176,12 @@ const CardList: React.FC<CardListProps> = (props) => {
           <>
             {query.data?.data.slice(0, 5).map((item, index) => (
               <AtomicCard
-                key={index}
+                onClick={() => {
+                  if (item.onCardClickRoute) {
+                    router.push(item.onCardClickRoute);
+                  }
+                }}
+                key={item.data.id}
                 {...item}
                 contentClassName={"line-clamp-2"}
                 className="h-full flex flex-col justify-between"
@@ -197,7 +204,10 @@ const CardList: React.FC<CardListProps> = (props) => {
                       }}
                       defaultValues={{ ...item.data }}
                       frontContent={
-                        <Button className="px-6  flex gap-2">
+                        <Button
+                          className="px-6  flex gap-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <PencilSimple size={16} />
                           Edit
                         </Button>

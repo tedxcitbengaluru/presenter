@@ -71,22 +71,20 @@ const ActionDialogCard: React.FC<ActionDialogCardProps> = (props) => {
   const [isOpen, setOpen] = useState(false);
   const [isActionPending, setActionPending] = useState(false);
 
-  const itemsRef = useRef(
-    props.items
-      ? props.items.map((item) => {
-          if ("input" in item) {
-            item.input.ref = createRef<HTMLInputElement>();
-          } else if ("textarea" in item) {
-            item.textarea.ref = createRef<HTMLTextAreaElement>();
-          }
+  if (props.items) {
+    props.items.forEach((item) => {
+      if ("input" in item) {
+        item.input.ref = createRef<HTMLInputElement>();
+      } else if ("textarea" in item) {
+        item.textarea.ref = createRef<HTMLTextAreaElement>();
+      }
 
-          return item;
-        })
-      : [],
-  );
+      return item;
+    });
+  }
 
   const getRefValues = () =>
-    itemsRef.current.reduce(
+    props.items?.reduce(
       (prev, curr) => ({
         ...prev,
         [curr.key]:
@@ -101,7 +99,8 @@ const ActionDialogCard: React.FC<ActionDialogCardProps> = (props) => {
 
   const mutationFn = async () => {
     if (props.actionOptions) {
-      await props.actionOptions.action(getRefValues());
+      const refValues = getRefValues();
+      await props.actionOptions.action(refValues ?? {});
     }
   };
 
@@ -138,7 +137,9 @@ const ActionDialogCard: React.FC<ActionDialogCardProps> = (props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{props.frontContent}</DialogTrigger>
+      <DialogTrigger onClick={(e) => e.stopPropagation()} asChild>
+        {props.frontContent}
+      </DialogTrigger>
       <DialogContent>
         {props.header ||
         props.description ||
@@ -163,10 +164,7 @@ const ActionDialogCard: React.FC<ActionDialogCardProps> = (props) => {
         )}
         <div className="grid gap-4 py-4">
           {props.items?.map((x) => (
-            <div
-              className="grid grid-cols-4 items-center gap-4"
-              key={x.label.text}
-            >
+            <div className="grid grid-cols-4 items-center gap-4" key={x.key}>
               <Label
                 htmlFor={x.label.text}
                 className={cn("text-right", x.label?.className)}

@@ -17,11 +17,13 @@ export const Navbar: React.FC = () => {
     <div className="fixed px-8 py-4 w-full flex items-center gap-8 justify-end">
       {isSessionLoaded === false && <LoaderAtomic />}
       {isSessionLoaded === true && dbUser.isAdmin && pathname !== "/admin" && (
-        <Button onClick={() => router.push("/admin")}>Admin View</Button>
+        <Button onClick={() => router.push("/admin")}>
+          View Admin Dashboard
+        </Button>
       )}
       {isSessionLoaded === true && dbUser.isAdmin && pathname === "/admin" && (
         <Button onClick={() => router.push(`/dashboard/${orgSlug}`)}>
-          Organization View
+          View Organization Dashboard
         </Button>
       )}
       {isSessionLoaded === true && <SingOutButton />}

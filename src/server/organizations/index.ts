@@ -36,6 +36,7 @@ export const getOrganizations = async (input: any) => {
       header: org.name,
       description: org.slug,
       content: org.description,
+      onCardClickRoute: `/dashboard/${org.slug}`,
     })),
     count: orgsCount,
   };
