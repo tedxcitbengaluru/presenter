@@ -9,7 +9,11 @@ export const ZPrismaExt = {
     createdBy: ZPrismaOutput.User,
     organization: ZPrismaOutput.Organization,
   }),
+  Timestamp: ZPrismaOutput.Timestamp.extend({
+    project: ZPrismaOutput.Project,
+  }),
   Media: ZPrismaOutput.Media.extend({
     createdBy: ZPrismaOutput.User,
+    timestamp: ZPrismaOutput.Timestamp,
   }),
 };

@@ -42,6 +42,15 @@ export const ZPrismaInput = {
     createdAt: ZType.DateTime.optional(),
     organizationId: ZType.Uuid,
   }),
+  Timestamp: z.object({
+    id: ZType.Uuid.optional(),
+    name: ZType.String.optional(),
+    description: ZType.String.optional(),
+    priority: ZType.Int.optional(),
+    startAfterSeconds: ZType.Int,
+    duration: ZType.Int.optional(),
+    projectId: ZType.Uuid,
+  }),
   Media: z.object({
     id: ZType.Uuid.optional(),
     type: z.nativeEnum(MediaType),
@@ -50,6 +59,7 @@ export const ZPrismaInput = {
     metadata: ZType.Json.optional(),
     path: ZType.String,
     bucketName: ZType.String,
+    timestampId: ZType.Uuid,
   }),
 };
 export const ZPrismaOutput = {
@@ -75,6 +85,15 @@ export const ZPrismaOutput = {
     createdAt: ZType.DateTime,
     organizationId: ZType.Uuid,
   }),
+  Timestamp: z.object({
+    id: ZType.Uuid,
+    name: ZType.String.nullable(),
+    description: ZType.String.nullable(),
+    priority: ZType.Int.nullable(),
+    startAfterSeconds: ZType.Int,
+    duration: ZType.Int.nullable(),
+    projectId: ZType.Uuid,
+  }),
   Media: z.object({
     id: ZType.Uuid,
     type: z.nativeEnum(MediaType),
@@ -83,5 +102,6 @@ export const ZPrismaOutput = {
     metadata: ZType.Json.nullable(),
     path: ZType.String,
     bucketName: ZType.String,
+    timestampId: ZType.Uuid,
   }),
 };

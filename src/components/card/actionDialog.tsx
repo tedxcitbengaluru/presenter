@@ -200,7 +200,11 @@ const ActionDialogCard: React.FC<ActionDialogCardProps> = (props) => {
 
           <DialogFooter className="gap-4">
             {props.showCancelButton ? (
-              <Button disabled={isActionPending} onClick={() => setOpen(false)}>
+              <Button
+                variant="outline"
+                disabled={isActionPending}
+                onClick={() => setOpen(false)}
+              >
                 Cancel
               </Button>
             ) : (

@@ -43,6 +43,7 @@ export default async function OrganizationHomePage({
         header: project.name,
         description: project.code,
         content: project.description,
+        onCardClickRoute: `/dashboard/${organization.slug}/${project.code}`,
       })),
       count: projectsCount,
     };
@@ -80,60 +81,50 @@ export default async function OrganizationHomePage({
     revalidatePath(`/dashboard/${organization.slug}`);
   };
 
+  const dialogItems = [
+    {
+      key: "name",
+      label: {
+        text: "Name",
+      },
+      input: {
+        placeHolder: "Enter your project name",
+      },
+    },
+    {
+      key: "description",
+      label: {
+        text: "Description",
+      },
+      textarea: {
+        placeHolder: "Enter your project description",
+      },
+    },
+  ];
+
   return (
     <OrganizationAccessWrapper>
-      <div className="w-screen pt-32  flex justify-start items-center">
-        <CardList
-          listHeader={organization.name + "'s " + "Projects"}
-          // initialData={projectsResponse}
-          refetchQueryKey={["projects"]}
-          refetchQueryFunction={getProjects}
-          createDialogOptions={{
-            items: [
-              {
-                key: "name",
-                label: {
-                  text: "Name",
-                },
-                input: {
-                  placeHolder: "Enter your project name",
-                },
-              },
-            ],
-            action: createProject,
-            successMessage: "Project Created!",
-            errorMessage: "Failed!",
-          }}
-          updateDialogOptions={{
-            items: [
-              {
-                key: "name",
-                label: {
-                  text: "Name",
-                },
-                input: {
-                  placeHolder: "Enter your project name",
-                },
-              },
-              {
-                key: "description",
-                label: {
-                  text: "Description",
-                },
-                textarea: {
-                  placeHolder: "Enter your project description",
-                },
-              },
-            ],
-            action: updateProject,
-            successMessage: "Project Updated!",
-          }}
-          deleteDialogOptions={{
-            action: deleteProject,
-            successMessage: "Project Deleted!",
-          }}
-        />
-      </div>
+      <CardList
+        listHeader={organization.name + "'s " + "Projects"}
+        // initialData={projectsResponse}
+        refetchQueryKey={["projects"]}
+        refetchQueryFunction={getProjects}
+        createDialogOptions={{
+          items: dialogItems,
+          action: createProject,
+          successMessage: "Project Created!",
+          errorMessage: "Failed!",
+        }}
+        updateDialogOptions={{
+          items: dialogItems,
+          action: updateProject,
+          successMessage: "Project Updated!",
+        }}
+        deleteDialogOptions={{
+          action: deleteProject,
+          successMessage: "Project Deleted!",
+        }}
+      />
     </OrganizationAccessWrapper>
   );
 }

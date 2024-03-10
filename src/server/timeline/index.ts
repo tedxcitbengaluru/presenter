@@ -6,37 +6,35 @@ import { staticSupabaseClient } from "@/utils/staticSupabaseClient";
 import { cookies } from "next/headers";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 
-const ZGetAllByOrgId = z.object({
-  organizationId: z.string(),
-  firstPageIndex: z.number().int(),
-  lastPageIndex: z.number().int(),
-  search: z.string().optional(),
+const ZGetAllByProjectId = z.object({
+  projectId: z.string(),
 });
-export async function getAllByOrgId(input: z.infer<typeof ZGetAllByOrgId>) {
-  const projectsQuery = await staticSupabaseClient
-    .from("Project")
+export async function getAllByOrgProjectId(
+  input: z.infer<typeof ZGetAllByProjectId>,
+) {
+  const timelineQuery = await staticSupabaseClient
+    .from("Timestamp")
     .select("*")
-    .eq("organizationId", input.organizationId)
-    .ilike("name", `${input.search ?? ""}%`)
-    .order("createdAt", { ascending: false })
-    .range(input.firstPageIndex, input.lastPageIndex);
+    .eq("projectId", input.projectId)
+    .order("startAfterSeconds", { ascending: true });
 
-  const projects = z.array(ZPrismaOutput.Project).parse(projectsQuery.data);
+  const timeline = z.array(ZPrismaOutput.Timestamp).parse(timelineQuery.data);
 
-  return projects;
+  return timeline;
 }
 
-const ZGetCount = ZGetAllByOrgId.pick({ organizationId: true, search: true });
+const ZGetCount = ZGetAllByProjectId.pick({
+  projectId: true,
+});
 export async function getCount(input: z.infer<typeof ZGetCount>) {
-  const projectsCountQuery = await staticSupabaseClient
-    .from("Project")
+  const timelineCountQuery = await staticSupabaseClient
+    .from("Timestamp")
     .select("*", { count: "exact", head: true })
-    .eq("organizationId", input.organizationId)
-    .ilike("name", `${input.search ?? ""}%`);
+    .eq("projectId", input.projectId);
 
-  const projectsCount = z.number().int().parse(projectsCountQuery.count);
+  const timelineCount = z.number().int().parse(timelineCountQuery.count);
 
-  return projectsCount;
+  return timelineCount;
 }
 
 const ZCreate = ZPrismaInput.Project.pick({

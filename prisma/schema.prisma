@@ -44,6 +44,19 @@ model Project {
     createdAt      DateTime     @default(now()) @db.Timestamp()
     organization   Organization @relation(fields: [organizationId], references: [id])
     organizationId String       @db.Uuid
+    Timestamp      Timestamp[]
+}
+
+model Timestamp {
+    id                String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    name              String?
+    description       String?
+    priority          Int?
+    startAfterSeconds Int
+    duration          Int?
+    projectId         String  @db.Uuid
+    project           Project @relation(fields: [projectId], references: [id])
+    Media             Media[]
 }
 
 model Media {
@@ -55,4 +68,6 @@ model Media {
     metadata    Json?
     path        String
     bucketName  String
+    timestampId String    @db.Uuid
+    timestamp   Timestamp @relation(fields: [timestampId], references: [id])
 }

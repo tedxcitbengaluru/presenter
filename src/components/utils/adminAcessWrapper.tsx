@@ -17,7 +17,7 @@ export const AdminAccessWrapper: React.FC<{
   if (!isSessionLoaded) {
     return (
       <div className="w-screen h-screen flex justify-center items-center">
-        <LoaderAtomic />
+        <LoaderAtomic className="w-8 h-8" />
       </div>
     );
   }

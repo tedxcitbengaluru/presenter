@@ -112,11 +112,13 @@ const CardList: React.FC<CardListProps> = (props) => {
   return (
     <div
       className={cn(
-        "w-full h-full flex flex-col justify-start items-center",
+        "w-screen min-h-screen flex flex-col justify-center items-center p-4 md:p-6",
         props.className,
       )}
     >
-      <div className="text-4xl">{props.listHeader}</div>
+      <div className="text-2xl sm:text-4xl mt-12 mb-2 xl:mt-0">
+        {props.listHeader}
+      </div>
       <SearchBar
         onSearch={() => {
           setCurrentPage(1);
@@ -127,7 +129,7 @@ const CardList: React.FC<CardListProps> = (props) => {
         placeHolder="Search your Projects..."
       />
 
-      <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="max-xs:w-full grid gap-4 md:gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         <AtomicCard
           contentClassName="p-6"
           className="w-full h-full flex justify-center items-center"

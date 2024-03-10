@@ -16,6 +16,27 @@ export default async function AdminPage({
   //   lastPageIndex,
   // });
 
+  const dialogItems = [
+    {
+      key: "name",
+      label: {
+        text: "Name",
+      },
+      input: {
+        placeHolder: "Enter your organization's name",
+      },
+    },
+    {
+      key: "slug",
+      label: {
+        text: "Slug",
+      },
+      input: {
+        placeHolder: "Enter your organization's slug",
+      },
+    },
+  ];
+
   return (
     <AdminAccessWrapper>
       <div className="w-screen pt-32  flex justify-start items-center">
@@ -25,51 +46,13 @@ export default async function AdminPage({
           refetchQueryKey={["orgs"]}
           refetchQueryFunction={ServerActions.Organizations.getOrganizations}
           createDialogOptions={{
-            items: [
-              {
-                key: "name",
-                label: {
-                  text: "Name",
-                },
-                input: {
-                  placeHolder: "Enter your organization's name",
-                },
-              },
-              {
-                key: "slug",
-                label: {
-                  text: "Slug",
-                },
-                input: {
-                  placeHolder: "Enter your organization's slug",
-                },
-              },
-            ],
+            items: dialogItems,
             action: ServerActions.Organizations.createOrganization,
             successMessage: "Organization Created!",
             errorMessage: "Failed!",
           }}
           updateDialogOptions={{
-            items: [
-              {
-                key: "name",
-                label: {
-                  text: "Name",
-                },
-                input: {
-                  placeHolder: "Enter your organization's name",
-                },
-              },
-              {
-                key: "description",
-                label: {
-                  text: "Description",
-                },
-                textarea: {
-                  placeHolder: "Enter your organization's description",
-                },
-              },
-            ],
+            items: dialogItems,
             action: ServerActions.Organizations.updateOrganization,
             successMessage: "Organization Updated!",
           }}

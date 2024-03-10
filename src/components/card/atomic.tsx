@@ -31,7 +31,7 @@ const AtomicCard: React.FC<AtomicCardProps> = (props) => {
       className={cn(
         "relative ",
         "max-w-[400px] duration-150",
-        !props.disableDefaultMinWidth ? "min-w-[400px]" : "",
+        !props.disableDefaultMinWidth ? "min-w-[300px] xs:min-w-[400px]" : "",
         !props.disableDefaultMinHeight ? "min-h-[200px]" : "",
         !props.disableCursorOnHover ? "cursor-pointer" : "",
         !props.disableBorderOnHover ? "hover:border-white" : "",
@@ -42,7 +42,11 @@ const AtomicCard: React.FC<AtomicCardProps> = (props) => {
     >
       {props.header || props.description ? (
         <CardHeader>
-          {props.header ? <CardTitle>{props.header}</CardTitle> : <></>}
+          {props.header ? (
+            <CardTitle className="truncate">{props.header}</CardTitle>
+          ) : (
+            <></>
+          )}
           {props.description ? (
             <CardDescription>{props.description}</CardDescription>
           ) : (

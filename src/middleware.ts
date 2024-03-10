@@ -1,4 +1,3 @@
-import { Organization, User } from "@prisma/client";
 import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextResponse } from "next/server";
 
@@ -17,8 +16,7 @@ export async function middleware(req: NextRequest) {
 
   if (currentSession) {
     if (req.nextUrl.pathname.startsWith("/login")) {
-      console.log(req.nextUrl.basePath);
-      return NextResponse.redirect(new URL("/dashboard", req.nextUrl.basePath));
+      return NextResponse.rewrite(new URL("/", req.url));
     }
     return res;
   }

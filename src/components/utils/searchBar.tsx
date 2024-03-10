@@ -24,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className="flex items-center px-3 mt-10 mb-10 rounded-lg border focus-within:border-white hover:border-white duration-150 shadow-md w-1/4">
+    <div className="flex items-center px-3 my-2 md:my-6 xl:my-8 rounded-lg border focus-within:border-white hover:border-white duration-150 shadow-md w-4/6 md:w-2/5 xl:w-1/4">
       <button className="mr-2 group hover:bg-transparent">
         <MagnifyingGlass
           size={24}
