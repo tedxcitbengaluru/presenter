@@ -16,7 +16,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.23.4",
     "@phosphor-icons/react": "^2.0.15",
     "@prisma/client": "^5.4.2",
     "@radix-ui/react-dialog": "^1.0.5",
