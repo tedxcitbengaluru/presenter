@@ -1,51 +1,172 @@
-"use client";
+import React from "react";
+import { OrganizationAccessWrapper } from "@/components/utils/orgAccessWrapper";
+import { notFound } from "next/navigation";
+import { ServerActions } from "@/server";
+import { revalidatePath } from "next/cache";
+import TimelineView from "@/components/timeline";
+import { ActionDialogCardProps } from "@/components/card/actionDialog";
+import Image from "next/image";
+import { GetFileBaseUrl } from "@/utils/storage/getFileBaseUrl";
 
-import AtomicCard from "@/components/card/atomic";
-import { Button } from "@/components/ui/button";
-import { LoaderAtomic } from "@/components/utils/loader";
-import { SingOutButton } from "@/components/utils/signOutButton";
-import { SessionStore } from "@/store/session";
-import { useParams, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-
-export default function ProjectHomePage() {
-  const { dbUser, orgSlug, isSessionLoaded } = SessionStore();
-  const router = useRouter();
-
-  const params = useParams<{ orgSlug: string; projectCode: string }>();
-
-  const query = useQuery({
-    queryKey: ["project-timeline"],
-    queryFn: async () => {},
+export default async function TimeLinePage({
+  params,
+}: {
+  params: { orgSlug: string; projectCode: string };
+}) {
+  const project = await ServerActions.Projects.getByCode({
+    code: params.projectCode,
   });
 
-  if (!isSessionLoaded) {
-    return (
-      <div className="w-screen h-screen flex justify-center items-center">
-        <LoaderAtomic className="w-8 h-8" />
-      </div>
-    );
-  }
-  if (orgSlug !== params.orgSlug) {
-    return (
-      <div className="w-screen h-screen flex justify-center items-center">
-        <AtomicCard
-          disableCursorOnHover
-          disableScaleOnHover
-          header="Access Denied"
-          description="Ask an admin for access."
-          content={
-            <div className="flex flex-col mt-4 justify-center items-start gap-2">
-              <Button onClick={() => router.push(`/dashboard/${orgSlug}`)}>
-                View Your Organization
-              </Button>
-              <SingOutButton />
-            </div>
-          }
-        />
-      </div>
-    );
+  if (!project) {
+    notFound();
   }
 
-  return <div>Project</div>;
+  const getTimeline = async () => {
+    "use server";
+    const timelineQueryResult =
+      await ServerActions.Timeline.getAllByOrgProjectId({
+        projectId: project.id,
+      });
+
+    const MediaComponent = ({
+      media,
+    }: {
+      media: Awaited<
+        ReturnType<typeof ServerActions.Timeline.getAllByOrgProjectId>
+      >[0]["media"];
+    }) => {
+      if (media.type === "IMAGE") {
+        return (
+          <Image
+            src={GetFileBaseUrl(media.bucketName, media.path)}
+            width={media.metadata.dimensions?.width}
+            height={media.metadata.dimensions?.height}
+            loading="lazy"
+            alt="Image"
+          />
+        );
+      } else if (media.type === "AUDIO") {
+        return (
+          <audio controls src={GetFileBaseUrl(media.bucketName, media.path)} />
+        );
+      } else if (media.type === "VIDEO") {
+        return (
+          <video controls src={GetFileBaseUrl(media.bucketName, media.path)} />
+        );
+      } else if (media.type === "PDF") {
+        return (
+          <iframe
+            src={GetFileBaseUrl(media.bucketName, media.path)}
+            title={media.metadata.name}
+            allowFullScreen={true}
+          />
+        );
+      } else if (media.type === "PPT") {
+        return (
+          <iframe
+            src={`https://docs.google.com/viewer?url=${GetFileBaseUrl(
+              media.bucketName,
+              media.path,
+            )}&embedded=true`}
+            title={media.metadata.name}
+            allowFullScreen={true}
+          />
+        );
+      }
+      return <></>;
+    };
+
+    return {
+      data: timelineQueryResult.map((timestamp) => ({
+        data: timestamp,
+        header: timestamp.name,
+        description: `${timestamp.order}`,
+        content: <MediaComponent media={timestamp.media} />,
+      })),
+    };
+  };
+
+  const createTimestamp = async (input: any) => {
+    "use server";
+
+    await ServerActions.Timeline.create({
+      projectId: project.id,
+      ...input,
+    });
+
+    revalidatePath(`/dashboard/${params.orgSlug}/${project.code}`);
+  };
+
+  const deleteTimestamp = async (input: any) => {
+    "use server";
+
+    await ServerActions.Timeline.remove(input);
+
+    revalidatePath(`/dashboard/${params.orgSlug}/${project.code}`);
+  };
+
+  const updateTimestamp = async (input: any) => {
+    "use server";
+
+    await ServerActions.Timeline.update(input);
+
+    revalidatePath(`/dashboard/${params.orgSlug}/${project.code}`);
+  };
+
+  const dialogItems: ActionDialogCardProps["items"] = [
+    {
+      key: "name",
+      label: {
+        text: "Name",
+      },
+      input: {
+        placeHolder: "Enter your timestamp's name",
+      },
+    },
+    {
+      key: "mediaId",
+      label: {
+        text: "Media",
+      },
+      input: {
+        type: "file",
+        className: "cursor-pointer",
+      },
+    },
+    {
+      key: "order",
+      label: {
+        text: "Order",
+      },
+      input: {
+        type: "number",
+        placeHolder: "Enter Order",
+      },
+    },
+  ];
+
+  return (
+    <OrganizationAccessWrapper>
+      <TimelineView
+        listHeader={`Project ${project.code} : ${project.name}`}
+        refetchQueryFunction={getTimeline}
+        createDialogOptions={{
+          items: dialogItems,
+          action: createTimestamp,
+          successMessage: "Timestamp Created!",
+          errorMessage: "Failed!",
+        }}
+        updateDialogOptions={{
+          items: dialogItems,
+          action: updateTimestamp,
+          successMessage: "Timestamp Updated!",
+        }}
+        deleteDialogOptions={{
+          action: deleteTimestamp,
+          successMessage: "Timestamp Deleted!",
+        }}
+      />
+      <div></div>
+    </OrganizationAccessWrapper>
+  );
 }

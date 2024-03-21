@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { LoaderAtomic } from "../utils/loader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { UploadButton } from "../utils/uploadButton";
 
 export type ActionDialogCardProps = {
   header?: ReactNode;
@@ -53,6 +54,7 @@ export type ActionDialogCardProps = {
           placeHolder?: string;
           className?: ClassNameValue;
           ref?: React.RefObject<HTMLInputElement>;
+          container?: string;
         };
       }
     | {
@@ -70,6 +72,7 @@ const ActionDialogCard: React.FC<ActionDialogCardProps> = (props) => {
 
   const [isOpen, setOpen] = useState(false);
   const [isActionPending, setActionPending] = useState(false);
+  const [mediaMap, setMediaMap] = useState<{ [key: string]: string }>({});
 
   if (props.items) {
     props.items.forEach((item) => {
@@ -85,15 +88,19 @@ const ActionDialogCard: React.FC<ActionDialogCardProps> = (props) => {
 
   const getRefValues = () =>
     props.items?.reduce(
-      (prev, curr) => ({
-        ...prev,
-        [curr.key]:
-          "input" in curr
-            ? curr.input.ref?.current?.value
-            : "textarea" in curr
-              ? curr.textarea.ref?.current?.value
-              : "",
-      }),
+      (prev, curr) => {
+        let keyValue: string | undefined = "";
+        if ("input" in curr && curr.input.type === "file") {
+          keyValue = mediaMap[curr.key];
+        } else if ("input" in curr) keyValue = curr.input.ref?.current?.value;
+        else if ("textarea" in curr)
+          keyValue = curr.textarea.ref?.current?.value;
+
+        return {
+          ...prev,
+          [curr.key]: keyValue,
+        };
+      },
       {} as { [key: string]: any },
     );
 
@@ -171,7 +178,18 @@ const ActionDialogCard: React.FC<ActionDialogCardProps> = (props) => {
               >
                 {x.label.text}
               </Label>
-              {"input" in x ? (
+              {"input" in x && x.input.type === "file" && (
+                <UploadButton
+                  id={x.label.text}
+                  name={x.label.text}
+                  container={x.input.container}
+                  className={cn("col-span-3", x.input.className)}
+                  onSuccess={async (input) => {
+                    setMediaMap((old) => ({ ...old, [x.key]: input.id }));
+                  }}
+                />
+              )}
+              {"input" in x && x.input.type !== "file" && (
                 <Input
                   id={x.label.text}
                   name={x.label.text}
@@ -183,7 +201,8 @@ const ActionDialogCard: React.FC<ActionDialogCardProps> = (props) => {
                   }
                   className={cn("col-span-3", x.input.className)}
                 />
-              ) : (
+              )}
+              {"textarea" in x && (
                 <Textarea
                   id={x.label.text}
                   name={x.label.text}

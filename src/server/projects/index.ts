@@ -6,6 +6,23 @@ import { staticSupabaseClient } from "@/utils/staticSupabaseClient";
 import { cookies } from "next/headers";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 
+export async function getByCode(input: { code: string }) {
+  const projectQuery = await staticSupabaseClient
+    .from("Project")
+    .select("code, id, name")
+    .eq("code", input.code)
+    .limit(1)
+    .single();
+
+  const project = ZPrismaOutput.Project.pick({
+    id: true,
+    name: true,
+    code: true,
+  }).parse(projectQuery.data);
+
+  return project;
+}
+
 const ZGetAllByOrgId = z.object({
   organizationId: z.string(),
   firstPageIndex: z.number().int(),

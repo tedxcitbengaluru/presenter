@@ -39,29 +39,27 @@ export default async function AdminPage({
 
   return (
     <AdminAccessWrapper>
-      <div className="w-screen pt-32  flex justify-start items-center">
-        <CardList
-          listHeader={"All " + "Organizations"}
-          // initialData={orgResponse}
-          refetchQueryKey={["orgs"]}
-          refetchQueryFunction={ServerActions.Organizations.getOrganizations}
-          createDialogOptions={{
-            items: dialogItems,
-            action: ServerActions.Organizations.createOrganization,
-            successMessage: "Organization Created!",
-            errorMessage: "Failed!",
-          }}
-          updateDialogOptions={{
-            items: dialogItems,
-            action: ServerActions.Organizations.updateOrganization,
-            successMessage: "Organization Updated!",
-          }}
-          deleteDialogOptions={{
-            action: ServerActions.Organizations.deleteOrganization,
-            successMessage: "Organization Deleted!",
-          }}
-        />
-      </div>
+      <CardList
+        listHeader={"All " + "Organizations"}
+        // initialData={orgResponse}
+        refetchQueryKey={["orgs"]}
+        refetchQueryFunction={ServerActions.Organizations.getOrganizations}
+        createDialogOptions={{
+          items: dialogItems,
+          action: ServerActions.Organizations.createOrganization,
+          successMessage: "Organization Created!",
+          errorMessage: "Failed!",
+        }}
+        updateDialogOptions={{
+          items: dialogItems,
+          action: ServerActions.Organizations.updateOrganization,
+          successMessage: "Organization Updated!",
+        }}
+        deleteDialogOptions={{
+          action: ServerActions.Organizations.deleteOrganization,
+          successMessage: "Organization Deleted!",
+        }}
+      />
     </AdminAccessWrapper>
   );
 }

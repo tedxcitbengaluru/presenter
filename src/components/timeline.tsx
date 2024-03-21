@@ -1,39 +1,18 @@
 "use client";
-import {
-  ReadonlyURLSearchParams,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import React, { ReactNode, useState } from "react";
-import PaginationSection from "../utils/pagination";
-import SearchBar from "../utils/searchBar";
-import AtomicCard, { AtomicCardProps } from "./atomic";
-import { ClassNameValue } from "tailwind-merge";
+import { useRouter } from "next/navigation";
+import React, { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "../ui/button";
 import { PencilSimple, PlusCircle, Trash } from "@phosphor-icons/react";
-import { useDebounce } from "@uidotdev/usehooks";
-import ActionDialogCard, { ActionDialogCardProps } from "./actionDialog";
-
-const constructURLSearchParams = (
-  input: { [key: string]: string },
-  searchParams: ReadonlyURLSearchParams,
-) => {
-  const params = new URLSearchParams(searchParams);
-  Object.keys(input).forEach((key) => {
-    params.set(key, input[key]);
-  });
-  return params;
-};
+import AtomicCard from "./card/atomic";
+import ActionDialogCard, { ActionDialogCardProps } from "./card/actionDialog";
+import { Button } from "./ui/button";
+import DocViewer from "react-doc-viewer";
+import { GetFileBaseUrl } from "@/utils/storage/getFileBaseUrl";
 
 type TQueryData = {
-  data: (Pick<
-    AtomicCardProps,
-    "header" | "description" | "footer" | "content"
-  > & { data: { [key: string]: any }; onCardClickRoute?: string })[];
-  count: number;
+  data: { [key: string]: any }[];
 };
 
 type TDialogOptions = {
@@ -43,94 +22,31 @@ type TDialogOptions = {
   errorMessage?: string;
 };
 
-type CardListProps = {
-  className?: ClassNameValue;
+type TimelineViewProps = {
   listHeader?: ReactNode;
 
-  initialData?: TQueryData;
-  refetchQueryKey: string[];
-  refetchQueryFunction: (input: {
-    firstPageIndex: number;
-    lastPageIndex: number;
-    search?: string;
-  }) => Promise<TQueryData>;
+  refetchQueryFunction: () => Promise<TQueryData>;
 
   createDialogOptions: TDialogOptions;
   updateDialogOptions: TDialogOptions;
   deleteDialogOptions: Omit<TDialogOptions, "items">;
 };
 
-const CardList: React.FC<CardListProps> = (props) => {
+const TimelineView: React.FC<TimelineViewProps> = (props) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const [totalPages, setTotalPages] = useState(
-    Math.max(1, Math.ceil((props.initialData?.count ?? 0) / 5)),
-  );
-  const [currentPage, setCurrentPage] = useState(
-    Math.max(
-      1,
-      Math.min(totalPages, Number(searchParams.get("currentPage") ?? 0)),
-    ),
-  );
-
-  const onPageChange = (pageIndex: number) => {
-    const params = constructURLSearchParams(
-      {
-        currentPage: pageIndex.toString(),
-      },
-      searchParams,
-    );
-    router.replace(`?${params.toString()}`);
-
-    setCurrentPage(pageIndex);
-  };
-
-  const [searchString, setSearchString] = useState("");
-
-  const debouncedSearchString = useDebounce(searchString, 250);
-
-  const firstPageIndex = (Math.max(1, Number(currentPage)) - 1) * 5;
-  const lastPageIndex = firstPageIndex + 5 - 1;
+  const refetchQueryKey = ["timeline"];
 
   const query = useQuery({
-    queryKey: [...props.refetchQueryKey, currentPage, debouncedSearchString],
-    queryFn: async () => {
-      const response = await props.refetchQueryFunction({
-        firstPageIndex,
-        lastPageIndex,
-        search: debouncedSearchString,
-      });
-
-      setTotalPages(Math.max(1, Math.ceil(response.count / 5)));
-
-      return response;
-    },
-    initialData: props.initialData,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    queryKey: refetchQueryKey,
+    queryFn: async () => await props.refetchQueryFunction(),
   });
 
   return (
-    <div
-      className={cn(
-        "w-screen min-h-screen flex flex-col justify-center items-center p-4 md:p-6",
-        props.className,
-      )}
-    >
-      <div className="text-2xl sm:text-4xl mt-12 mb-2 xl:mt-0">
+    <div className={cn("flex flex-col justify-center items-center p-4 md:p-6")}>
+      <div className="text-2xl sm:text-4xl mt-12 mb-8 xl:mt-0">
         {props.listHeader}
       </div>
-      <SearchBar
-        onSearch={() => {
-          setCurrentPage(1);
-        }}
-        value={searchString}
-        debouncedValue={debouncedSearchString}
-        setValue={(newValue) => setSearchString(newValue)}
-        placeHolder="Search your Projects..."
-      />
-
       <div className="max-xs:w-full grid gap-4 md:gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         <AtomicCard
           contentClassName="p-6"
@@ -141,8 +57,14 @@ const CardList: React.FC<CardListProps> = (props) => {
               items={props.createDialogOptions.items}
               actionOptions={{
                 label: "Save",
-                action: props.createDialogOptions.action,
-                invalidateQueryKey: props.refetchQueryKey,
+                action: async (input) => {
+                  props.createDialogOptions.action({
+                    ...input,
+                    xOrder: 0,
+                    yOrder: 0,
+                  });
+                },
+                invalidateQueryKey: refetchQueryKey,
                 successMessage: props.createDialogOptions.successMessage,
                 errorMessage: props.createDialogOptions.errorMessage,
               }}
@@ -178,7 +100,7 @@ const CardList: React.FC<CardListProps> = (props) => {
           </>
         ) : (
           <>
-            {query.data?.data.slice(0, 5).map((item, index) => (
+            {query.data?.data.map((item, index) => (
               <AtomicCard
                 onClick={() => {
                   if (item.onCardClickRoute) {
@@ -187,6 +109,22 @@ const CardList: React.FC<CardListProps> = (props) => {
                 }}
                 key={item.data.id}
                 {...item}
+                // content={
+                //   item.data.media.type === "PPT" ? (
+                //     <DocViewer
+                //       documents={[
+                //         {
+                //           uri: GetFileBaseUrl(
+                //             item.data.media.bucketName,
+                //             item.data.media.path,
+                //           ),
+                //         },
+                //       ]}
+                //     />
+                //   ) : (
+                //     item.content
+                //   )
+                // }
                 contentClassName={"line-clamp-2"}
                 className="h-full flex flex-col justify-between"
                 footer={
@@ -201,7 +139,7 @@ const CardList: React.FC<CardListProps> = (props) => {
                             ...input,
                             id: item.data.id,
                           }),
-                        invalidateQueryKey: props.refetchQueryKey,
+                        invalidateQueryKey: refetchQueryKey,
                         successMessage:
                           props.updateDialogOptions.successMessage,
                         errorMessage: props.updateDialogOptions.errorMessage,
@@ -228,7 +166,7 @@ const CardList: React.FC<CardListProps> = (props) => {
                             ...input,
                             id: item.data.id,
                           }),
-                        invalidateQueryKey: props.refetchQueryKey,
+                        invalidateQueryKey: refetchQueryKey,
                         successMessage:
                           props.deleteDialogOptions.successMessage,
                         errorMessage: props.deleteDialogOptions.errorMessage,
@@ -251,13 +189,8 @@ const CardList: React.FC<CardListProps> = (props) => {
           </>
         )}
       </div>
-      <PaginationSection
-        onPageChange={onPageChange}
-        currentPage={currentPage}
-        totalPages={totalPages}
-      />
     </div>
   );
 };
 
-export default CardList;
+export default TimelineView;

@@ -12,8 +12,11 @@ export const ZPrismaExt = {
   Timestamp: ZPrismaOutput.Timestamp.extend({
     project: ZPrismaOutput.Project,
   }),
+  TimestampMediaMap: ZPrismaOutput.TimestampMediaMap.extend({
+    timestamp: ZPrismaOutput.Timestamp,
+    media: ZPrismaOutput.Media,
+  }),
   Media: ZPrismaOutput.Media.extend({
     createdBy: ZPrismaOutput.User,
-    timestamp: ZPrismaOutput.Timestamp,
   }),
 };

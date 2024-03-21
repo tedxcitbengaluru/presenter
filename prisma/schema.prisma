@@ -32,6 +32,7 @@ enum MediaType {
     VIDEO
     AUDIO
     PPT
+    PDF
 }
 
 model Project {
@@ -48,26 +49,35 @@ model Project {
 }
 
 model Timestamp {
-    id                String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     name              String?
     description       String?
-    priority          Int?
-    startAfterSeconds Int
-    duration          Int?
-    projectId         String  @db.Uuid
-    project           Project @relation(fields: [projectId], references: [id])
-    Media             Media[]
+    projectId         String             @db.Uuid
+    project           Project            @relation(fields: [projectId], references: [id])
+    order             Int
+    isActive          Boolean            @default(true)
+    TimestampMediaMap TimestampMediaMap?
+}
+
+model TimestampMediaMap {
+    id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    timestampId String    @db.Uuid
+    timestamp   Timestamp @relation(fields: [timestampId], references: [id])
+    mediaId     String    @db.Uuid
+    media       Media     @relation(fields: [mediaId], references: [id])
+
+    @@unique([mediaId])
+    @@unique([timestampId])
 }
 
 model Media {
-    id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-    type        MediaType
-    createdAt   DateTime  @default(now()) @db.Timestamp()
-    createdById String    @default(dbgenerated("auth.uid()")) @db.Uuid
-    createdBy   User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
-    metadata    Json?
-    path        String
-    bucketName  String
-    timestampId String    @db.Uuid
-    timestamp   Timestamp @relation(fields: [timestampId], references: [id])
+    id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    type              MediaType
+    createdAt         DateTime           @default(now()) @db.Timestamp()
+    createdById       String             @default(dbgenerated("auth.uid()")) @db.Uuid
+    createdBy         User               @relation(fields: [createdById], references: [id], onDelete: Cascade)
+    metadata          Json?
+    path              String
+    bucketName        String
+    TimestampMediaMap TimestampMediaMap?
 }

@@ -1,10 +1,10 @@
 import { appConstants } from "../appConstants";
 
-export const GetFileBaseUrl = (orgBucketName: string, filepath: string) => {
+export const GetFileBaseUrl = (bucketName: string, filepath: string) => {
   return (
-    appConstants.NEXT_PUBLIC_SUPABASE_PROJECT_URL +
+    "https://zytxbvdpgtirmcnaehio.supabase.co" +
     "/storage/v1/object/public/" +
-    orgBucketName +
+    bucketName +
     "/" +
     filepath
   );

@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 import { MediaType } from "@prisma/client";
 import { GetFileBaseUrl } from "./getFileBaseUrl";
-import { createMediaAction } from "@/server/media/createMediaAction";
-import { staticSupabaseClient } from "../staticSupabaseClient";
+import { ServerActions } from "@/server";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 function imageSize(url: string) {
   const img = document.createElement("img");
@@ -47,53 +47,53 @@ const allowedPPTTypes = [
 const allowedImageTypes = ["image"];
 const allowedVideoTypes = ["video"];
 const allowedAudioTypes = ["audio"];
+const allowedPdfTypes = ["pdf"];
 
 export const UploadFileService = async (
   file: File,
   config: {
-    orgBucketName: string;
+    bucketName: string;
     container: string;
     uploadedByUserId: string;
   },
 ) => {
   const typeStr = file.type.split("/")[0];
+  const typeStrSuffix = file.type.split("/")[1];
   const type: MediaType | null = allowedImageTypes.includes(typeStr)
     ? MediaType.IMAGE
     : allowedAudioTypes.includes(typeStr)
       ? MediaType.AUDIO
       : allowedVideoTypes.includes(typeStr)
         ? MediaType.VIDEO
-        : allowedPPTTypes.includes(typeStr)
+        : typeStr === "application" && allowedPPTTypes.includes(typeStrSuffix)
           ? MediaType.PPT
-          : null;
+          : typeStr === "application" && allowedPdfTypes.includes(typeStrSuffix)
+            ? MediaType.PDF
+            : null;
 
   if (type === null) {
     throw "File type not allowed";
   }
 
-  const fileUploadResult = await staticSupabaseClient.storage
-    .from(config.orgBucketName)
+  const supabaseClient = createClientComponentClient();
+
+  const fileUploadResult = await supabaseClient.storage
+    .from(config.bucketName)
     .upload(config.container + "/" + uuidv4(), file);
 
   if (!fileUploadResult.data) {
     console.error(fileUploadResult.error);
     throw "Server Upload Failed";
   }
-
-  const dimensions = await imageSize(
-    GetFileBaseUrl(config.orgBucketName, fileUploadResult.data.path),
-  );
-
-  // return {
-  // 	type,
-  // 	path: fileUploadResult.data.path,
-  // 	metadata: { size: file.size, name: file.name, mime: file.type, dimensions },
-  // 	bucketName: config.orgBucketName,
-  // 	createdById: config.uploadedByUserId
-  // };
-
   try {
-    await createMediaAction({
+    const dimensions =
+      type === "IMAGE"
+        ? await imageSize(
+            GetFileBaseUrl(config.bucketName, fileUploadResult.data.path),
+          )
+        : undefined;
+
+    return await ServerActions.Media.create({
       type,
       path: fileUploadResult.data.path,
       metadata: {
@@ -102,12 +102,12 @@ export const UploadFileService = async (
         mime: file.type,
         dimensions,
       },
-      bucketName: config.orgBucketName,
+      bucketName: config.bucketName,
       createdById: config.uploadedByUserId,
     });
   } catch (error) {
-    staticSupabaseClient.storage
-      .from(config.orgBucketName)
+    supabaseClient.storage
+      .from(config.bucketName)
       .remove([fileUploadResult.data.path]);
 
     console.log("Upload Failed: ", error);
